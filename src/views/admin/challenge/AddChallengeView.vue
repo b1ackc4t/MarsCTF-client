@@ -1,0 +1,354 @@
+<template>
+    <div>
+        <el-form
+                label-width="100px"
+                :rules="rules"
+                class="text-start"
+                :model="currentChallenge"
+                ref="myForm"
+        >
+            <el-row>
+                <el-col :span="18">
+                    <el-form-item label="题目名称" prop="cname">
+                        <el-input v-model="currentChallenge.cname"></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                    <el-form-item label="分值" label-width="50px" prop="score">
+                        <el-input v-model.number="currentChallenge.score"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col :span="24">
+                    <el-form-item label="题目描述" >
+                        <el-input
+                                :autosize="{ minRows: 4, maxRows: 8 }"
+                                type="textarea"
+                                placeholder="Please input"
+                                v-model="currentChallenge.descr"
+                        >
+                        </el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col :span="24">
+                    <el-form-item label="题目附件" >
+                        <el-upload
+                                class="upload-demo"
+                                drag
+                                action="http://mysite.com/api/admin/uploadCTFFile"
+                                :with-credentials="true"
+                                :limit="1"
+                                :on-remove="removeFileSubmit"
+                                :on-success="uploadFile"
+                                :on-preview="previewFile"
+                        >
+                            <el-icon class="el-icon--upload"><upload-filled /></el-icon>
+                            <div class="el-upload__text">
+                                拖动或点击上传<em>题目附件</em>
+                            </div>
+                            <template #tip>
+                            </template>
+                        </el-upload>
+                    </el-form-item>
+
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col :span="24">
+                    <el-form-item label="FLAG" prop="flag">
+                        <el-input v-model="currentChallenge.flag"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col :span="16">
+                    <el-form-item label="题目分类" prop="tname">
+                        <el-select v-model="currentChallenge.tname" placeholder="Select">
+                            <el-option
+                                    v-for="item in challengeTypes"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value"
+                            >
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item label="是否公开" label-width="85px">
+                        <el-switch
+                                v-model="currentChallenge.exposed"
+                                inline-prompt
+                                active-color="#13ce66"
+                                inactive-color="#ff4949"
+                                active-text="是"
+                                inactive-text="否"
+                        />
+                    </el-form-item>
+
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col :span="24">
+                    <el-form-item label="技术标签" >
+                        <el-cascader-panel
+                                v-model="currentChallenge.tags"
+                                :options="tagOptions"
+                                class="tag-panel"
+                                :props="props"
+                                :show-all-levels="false"
+                        />
+                    </el-form-item>
+
+                </el-col>
+            </el-row>
+
+            <el-row class="foot">
+                <el-button @click="$router.go(-1)">Back</el-button>
+                <el-button type="primary" @click="challengeSubmit"
+                >Confirm</el-button
+                >
+            </el-row>
+        </el-form>
+    </div>
+</template>
+
+<script>
+    import {UploadFilled} from '@element-plus/icons-vue'
+    import { saveChallenge } from "@/api/challenge";
+    import {download, removeFile} from "@/api/file";
+    import { ElMessage } from 'element-plus'
+    import {getChaTagAndTypeForAdmin} from "@/api/chaTag";
+
+    export default {
+        name: "AddChallengeView",
+        components: {
+            UploadFilled
+        },
+        data() {
+            return {
+                props: {
+                    multiple: true,
+                    checkStrictly: true,
+                },
+                challengeTypes: [
+                    {
+                        label: 'Web',
+                        value: 'web'
+                    },
+                    {
+                        label: 'Pwn',
+                        value: 'pwn'
+                    },
+                    {
+                        label: 'Re',
+                        value: 're'
+                    },
+                    {
+                        label: 'Crypto',
+                        value: 'crypto'
+                    },
+                    {
+                        label: 'Misc',
+                        value: 'misc'
+                    },
+                    {
+                        label: 'Other',
+                        value: 'other'
+                    }
+                ],
+                currentChallenge: {
+                    cname: '',
+                    descr: '',
+                    tname: 'web',
+                    exposed: true,
+                    tags: [],
+                    fid: null,
+                    score: 0,
+                    flag: '',
+                    fname: null
+                },
+                rules: {
+                    cname: [
+                        {
+                            required: true,
+                            message: '名称不能为空',
+                            trigger: 'blur',
+                        },
+                        {
+                            min: 1,
+                            max: 20,
+                            message: '长度需要在1-20之间',
+                            trigger: 'blur',
+                        },
+                    ],
+                    score: [
+                        {
+                            required: true,
+                            message: '分值不能为空',
+                            trigger: 'blur',
+                        },
+                        {
+                            type: 'number',
+                            message: '分值必须是数字类型',
+                            trigger: 'blur',
+                        },
+                        {
+                            validator: this.checkScore,
+                            trigger: 'blur',
+                        }
+                    ],
+                    flag: [
+                        {
+                            required: true,
+                            message: 'flag不能为空',
+                            trigger: 'blur',
+                        }
+                    ],
+                    tname: [
+                        {
+                            required: true,
+                            message: '类型不能为空',
+                            trigger: 'change',
+                        }
+                    ],
+                },
+                tagOptions: [],
+            }
+        },
+        methods: {
+            challengeSubmit() {
+                this.$refs.myForm.validate((vRes) => {
+                    if (vRes) {
+                        this.saveChallenge()
+                    }
+                })
+            },
+            saveChallenge() {
+                let tags = this.currentChallenge.tags
+                for (let index1 in tags) {
+                    tags[index1] = tags[index1][tags[index1].length - 1]
+                }
+                saveChallenge(this.currentChallenge).then((res) => {
+                    if (res.status === 200 && res.data.flag === true) {
+                        ElMessage({
+                            message: res.data.msg,
+                            type: 'success',
+                        })
+                        this.$router.push({ name: 'challengeManager'})
+                    } else {
+                        ElMessage({
+                            message: res.data.msg,
+                            type: 'warning',
+                        })
+                    }
+                }).catch((error) => {
+                    console.log(error)
+                    ElMessage({
+                        message: error,
+                        type: 'error',
+                    })
+                })
+            },
+            removeFileSubmit() {
+                // 删除服务端文件后把文件id置为0
+                removeFile(this.currentChallenge.fid).then((res) => {
+                    if (res.status === 200 && res.data.flag === true) {
+                        this.flushFile()
+                    } else {
+                        this.flushFile()
+                    }
+                })
+            },
+            /**
+             * 上传文件
+             * @param res
+             * @param file
+             * @param fileList
+             */
+            uploadFile(res, file, fileList) {
+                if (res.flag === true) {    //成功则存储文件id
+                    this.currentChallenge.fid = res.data
+                    this.currentChallenge.fname = file.name
+                } else { // 失败则警告
+                    this.flushFile()
+                    ElMessage({
+                        message: `${file.name} 上传失败 请重试`,
+                        type: 'error',
+                    })
+                    fileList.splice(fileList.findIndex((item) => item === file), 1)
+                }
+            },
+            /**
+             * 填充标签选项
+             */
+            setTagOptions() {
+                getChaTagAndTypeForAdmin().then((res) => {
+                    if (res.status === 200 && res.data.flag === true) {
+                        let tagTypes = res.data.data
+                        for (let type in tagTypes) {
+                            let item = {
+                                value: type,
+                                label: type,
+                                disabled: true,
+                                children: []
+                            }
+                            for (let tag in tagTypes[type]) {
+                                item.children.push({
+                                    label: tagTypes[type][tag],
+                                    value: tagTypes[type][tag]
+                                })
+                            }
+                            this.tagOptions.push(item)
+                        }
+                    }
+                }).catch((error) => {
+                    console.log(error)
+                })
+            },
+            /**
+             * 校验分值范围
+             * @param rule
+             * @param value
+             * @param callback
+             */
+            checkScore(rule, value, callback) {
+                if (value < 0 || value > 10000) {
+                    callback(new Error('分值必须在0-10000之间'))
+                } else {
+                    callback()
+                }
+            },
+            flushFile() {
+                this.currentChallenge.fid = null;
+                this.currentChallenge.fname = null
+            },
+            previewFile() {
+                download(this.currentChallenge.fid).catch((error) => {
+                    console.log(error)
+                    ElMessage({
+                        message: error,
+                        type: 'error',
+                    })
+                })
+            }
+        },
+        mounted() {
+            this.setTagOptions()
+        }
+    }
+</script>
+
+<style scoped>
+    .tag-panel {
+        background-color: white;
+    }
+    .foot {
+        margin-left: 104px;
+    }
+</style>
