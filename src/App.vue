@@ -25,4 +25,8 @@ export default {
   color: #2c3e50;
 }
 
+.github-markdown-body {
+    padding: 0 !important;;
+}
+
 </style>

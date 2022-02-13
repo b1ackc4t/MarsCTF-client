@@ -2,14 +2,19 @@
     <div>
         <WPHeader class="mb-3" :wp-info="wpInfo"></WPHeader>
         <BodyCard>
-            <md-editor class="text-start" v-model="wpInfo.text" preview-theme="github" previewOnly/>
+            <div class="text-start">
+                <v-md-editor
+                        v-model="wpInfo.text"
+                        mode="preview"
+                >
+                </v-md-editor>
+            </div>
+
         </BodyCard>
     </div>
 </template>
 
 <script>
-    import MdEditor from 'md-editor-v3';
-    import 'md-editor-v3/lib/style.css';
     import BodyCard from "@/components/card/BodyCard";
     import WPHeader from "@/components/writeup/WPHeader";
     import {getWriteupByWidForUser} from "@/api/writeup";
@@ -18,7 +23,7 @@
     var sep = ' '
     export default {
         name: "WPUserViewCard",
-        components: {WPHeader, BodyCard, MdEditor },
+        components: {WPHeader, BodyCard },
         props: {
             wid: Number
         },

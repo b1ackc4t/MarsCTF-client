@@ -13,10 +13,16 @@
                     >
                     </el-input>
                 </el-row>
-                <el-row class="mb-3">
-                    <md-editor class="text-start mt-0 pt-0" v-model="wpInfo.text" theme="github" @onUploadImg="uploadImage"/>
-                </el-row>
+                <el-row class="mb-3 text-start edit-padding" style="z-index: 10000">
+                    <v-md-editor
+                            v-model="wpInfo.text"
+                            height="500px"
+                            :disabled-menus="[]"
+                            @upload-image="uploadImage"
+                    >
 
+                    </v-md-editor>
+                </el-row>
                 <el-row class="mb-3">
                     <div class="text-start">
                         <span class="me-3">Writeup标签</span>
@@ -59,8 +65,6 @@
 </template>
 
 <script>
-    import MdEditor from 'md-editor-v3';
-    import 'md-editor-v3/lib/style.css';
     import BodyCard from "@/components/card/BodyCard";
     import {saveWriteup} from "@/api/writeup";
     import {ElMessage} from "element-plus";
@@ -72,7 +76,6 @@
         name: "editWP",
         components: {
             BodyCard,
-            MdEditor
         },
         props: {
             cid: Number
@@ -130,12 +133,14 @@
                     })
                 })
             },
-            uploadImage(files, callback) {
-                var urls = []
+            uploadImage(event, insertImage, files) {
                 for (let index in files) {
                     uploadImageForWP(files[index]).then((res) => {
                         if (res.status === 200 && res.data.flag === true) {
-                            urls.push(`${server}${res.data.data}`)
+                            insertImage({
+                                url: `${server}${res.data.data}`,
+                                // desc: ' '
+                            })
                         }
                     }).catch((error) => {
                         ElMessage({
@@ -144,13 +149,14 @@
                         })
                     })
                 }
-                console.log(urls)
-                callback(urls)
+
             }
         }
     }
 </script>
 
 <style scoped>
-
+    .edit-padding >>> .github-markdown-body {
+        padding: 16px 32px 32px !important;
+    }
 </style>
