@@ -1,10 +1,204 @@
 <template>
-    111
+    <el-row>
+        <el-form :inline="true" class="demo-form-inline">
+            <el-form-item>
+                <el-input placeholder="name"></el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @click="onSubmit">Query</el-button>
+            </el-form-item>
+        </el-form>
+    </el-row>
+
+    <el-row>
+        <el-table :data="wps" style="width: 100%" stripe>
+            <el-table-column prop="wid" label="ID" sortable/>
+            <el-table-column prop="title" label="标题" />
+            <el-table-column prop="uname" label="作者" />
+            <el-table-column prop="creTime" label="发表时间" />
+            <el-table-column label="审核状态">
+                <template #default="{row}">
+                    <el-tag
+                            :type="wpStatus(row)"
+                    >{{wpStatusText(row)}}
+                    </el-tag>
+                </template>
+            </el-table-column>
+            <el-table-column label="分数">
+                <template #default="{row}">
+                    <el-tag v-if="row.done"
+                            :type="row.status?'success':'danger'"
+                    >{{row.score}}
+                    </el-tag>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    label="操作"
+                    align="center"
+                    width="230"
+                    class-name="small-padding fixed-width"
+            >
+                <template #default="{row}">
+                    <el-button type="warning" size="mini" @click="viewWP(row)">
+                        查看
+                    </el-button>
+                    <el-button v-if="row.done" type="success" size="mini" @click="reCheckForAdmin(row)">
+                        重审
+                    </el-button>
+                    <el-button
+                            size="mini"
+                            type="danger"
+                            @click="removeWriteupForAdmin(row)"
+                    >
+                        删除
+                    </el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+    </el-row>
+
+    <el-row class="mt-3">
+        <el-pagination
+                background
+                v-model:currentPage="currentPage"
+                :page-sizes="[10, 20, 50, 100]"
+                :page-size="pageSize"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="total"
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+        >
+        </el-pagination>
+    </el-row>
 </template>
 
 <script>
+    import {getWriteupByPageForAdmin, removeWriteupForAdmin, reCheckForAdmin} from "@/api/writeup";
+    import {ElMessage, ElMessageBox} from "element-plus";
+
     export default {
-        name: "WriteupManager"
+        name: "WriteupManager",
+        data() {
+            return {
+                pageSize: 10,
+                total: 100,
+                currentPage: 1,
+                wps: [],
+            }
+        },
+        methods: {
+            getWriteupByPageForAdmin() {
+                getWriteupByPageForAdmin(this.pageSize, this.currentPage).then((res) => {
+                    if (res.status === 200 && res.data.flag === true) {
+                        this.total = res.data.data.total
+                        this.currentPage = res.data.data.pageNum
+                        this.wps = res.data.data.list
+                    }
+                }).catch((error) => {
+                    ElMessage({
+                        message: error,
+                        type: 'error',
+                    })
+                })
+            },
+            removeWriteupForAdmin(writeup) {
+                ElMessageBox.confirm(
+                    '确定要删除该Writeup吗？',
+                    'Warning',
+                    {
+                        confirmButtonText: 'OK',
+                        cancelButtonText: 'Cancel',
+                        type: 'warning',
+                    }
+                ).then(() => {
+                    removeWriteupForAdmin(writeup).then((res) => {
+                        if (res.status === 200 && res.data.flag === true) {
+                            ElMessage({
+                                message: res.data.msg,
+                                type: 'success',
+                            })
+                        } else {
+                            ElMessage({
+                                message: res.data.msg,
+                                type: 'warning',
+                            })
+                        }
+                        this.getWriteupByPageForAdmin()
+                    }).catch((error) => {
+                        ElMessage({
+                            message: error,
+                            type: 'error',
+                        })
+                    })
+                })
+
+            },
+            handleCurrentChange(currentP) {
+                this.currentPage = currentP
+                this.getWriteupByPageForAdmin()
+            },
+            handleSizeChange(currentS) {
+                this.pageSize = currentS
+                this.getWriteupByPageForAdmin()
+            },
+            wpStatus(wp) {
+                if (wp.done) {
+                    if (wp.status) {
+                        return "success"
+                    } else {
+                        return "danger"
+                    }
+                } else {
+                    return "warning"
+                }
+            },
+            wpStatusText(wp) {
+                if (wp.done) {
+                    if (wp.status) {
+                        return "通过"
+                    } else {
+                        return "驳回"
+                    }
+                } else {
+                    return "未审核"
+                }
+            },
+            reCheckForAdmin(writeup) {
+                reCheckForAdmin(writeup.wid, writeup.title).then((res) => {
+                    if (res.status === 200 && res.data.flag === true) {
+                        ElMessage({
+                            message: res.data.msg,
+                            type: 'success',
+                        })
+                    } else {
+                        ElMessage({
+                            message: res.data.msg,
+                            type: 'warning',
+                        })
+                    }
+                    this.getWriteupByPageForAdmin()
+                }).catch((error) => {
+                    ElMessage({
+                        message: error,
+                        type: 'error',
+                    })
+                })
+            },
+            viewWP(wpInfo) {
+                this.$router.push({
+                    name: 'writeupView',
+                    params: {
+                        wid: wpInfo.wid,
+                    },
+                    query: {
+                        type: 'manager'
+                    }
+                })
+            },
+        },
+        mounted() {
+            this.getWriteupByPageForAdmin()
+        }
     }
 </script>
 

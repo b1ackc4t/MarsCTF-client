@@ -1,4 +1,5 @@
 import requests from "@/axios";
+import qs from 'qs'
 
 export function saveWriteup(writeup) {
     let form = new FormData()
@@ -57,6 +58,47 @@ export function rejectWriteup(wid, score) {
 export function getWriteupByWidForAdmin(wid) {
     return requests({
         url: `/api/admin/writeup/${wid}`,
+        method: 'get'
+    })
+}
+
+export function getWriteupByPageForAdmin(pageSize, pageNum) {
+    return requests({
+        url: `/api/admin/writeup/${pageSize}/${pageNum}`,
+        method: 'get'
+    })
+}
+
+export function removeWriteupForAdmin(writeup) {
+    return requests({
+        url: '/api/admin/writeup',
+        method: 'post',
+        data: qs.stringify({
+            action: 'remove',
+            data: JSON.stringify(writeup)
+        })
+    })
+}
+
+export function reCheckForAdmin(wid, title) {
+    return requests({
+        url: '/api/admin/writeup/reCheck',
+        method: 'post',
+        data: qs.stringify({
+            wid: wid,
+            title: title
+        })
+    })
+}
+
+/**
+ * 获取某题目的wp排名
+ * @param cid
+ * @returns {AxiosPromise}
+ */
+export function getWriteupRank(cid) {
+    return requests({
+        url: `/api/user/writeupRank/${cid}`,
         method: 'get'
     })
 }

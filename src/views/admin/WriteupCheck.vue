@@ -138,7 +138,10 @@
                 this.$router.push({
                     name: 'writeupView',
                     params: {
-                        wid: wpInfo.wid
+                        wid: wpInfo.wid,
+                    },
+                    query: {
+                        type: 'check'
                     }
                 })
             },
@@ -223,6 +226,14 @@
                     }
                 })
 
+            },
+            handleCurrentChange(currentP) {
+                this.currentPage = currentP
+                this.getUnCheckWriteupByPageForAdmin()
+            },
+            handleSizeChange(currentS) {
+                this.pageSize = currentS
+                this.getUnCheckWriteupByPageForAdmin()
             }
 
         },

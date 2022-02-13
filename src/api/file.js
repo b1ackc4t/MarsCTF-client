@@ -33,3 +33,17 @@ export function download(id) {
     // window.open(`${server}/api/user/downloadCTFFile/${id}`)
     window.location.href = `${server}/api/user/downloadCTFFile/${id}`
 }
+
+export function uploadImageForWP(fileObj) {
+    let form = new FormData()
+    form.append("file", fileObj)
+    form.append("wid", 99999999)
+    return requests({
+        url: '/api/user/writeup/uploadImage',
+        method: 'post',
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        },
+        data:form
+    })
+}

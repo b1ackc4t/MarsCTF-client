@@ -15,107 +15,39 @@
                     <table class="table align-items-center mb-0">
                         <thead>
                         <tr>
-                            <th class="text-uppercase text-secondary font-weight-bolder opacity-7">user</th>
-                            <th class="text-uppercase text-secondary font-weight-bolder opacity-7 ps-2">score</th>
-                            <th class="text-uppercase text-secondary font-weight-bolder opacity-7 ps-2">点赞数</th>
+                            <th class="text-uppercase text-secondary font-weight-bolder opacity-7">标题</th>
+                            <th class="text-uppercase text-secondary font-weight-bolder opacity-7 ps-2">用户名</th>
+                            <th class="text-uppercase text-secondary font-weight-bolder opacity-7 ps-2">得分</th>
                             <th>
                             </th>
                         </tr>
                         </thead>
-                        <tbody>
-                        <tr>
-                            <td>
-                                <div class="d-flex px-2">
-                                    <div class="my-auto">
-                                        <h6 class="mb-0">admin</h6>
+                        <tbody v-if="wps.length > 0">
+                            <tr v-for="wp in wps" :key="wp.wid">
+                                <td>
+                                    <div class="d-flex px-2">
+                                        <div class="my-auto">
+                                            <router-link :to="{ name: 'viewWP', params: { wid: wp.wid }}">
+                                                <h6 class="mb-0">{{wp.title}}</h6>
+                                            </router-link>
+                                        </div>
                                     </div>
-                                </div>
-                            </td>
-                            <td>
-                                <p class="font-weight-normal mb-0">99</p>
-                            </td>
-                            <td>
-                                <p class="font-weight-normal mb-0">2,500</p>
-                            </td>
-                            <td class="align-middle">
-                                <i class="material-icons">thumb_up</i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="d-flex px-2">
-                                    <div class="my-auto">
-                                        <h6 class="mb-0">admin</h6>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <p class="font-weight-normal mb-0">99</p>
-                            </td>
-                            <td>
-                                <p class="font-weight-normal mb-0">2,500</p>
-                            </td>
-                            <td class="align-middle">
-                                <i class="material-icons">thumb_up</i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="d-flex px-2">
-                                    <div class="my-auto">
-                                        <h6 class="mb-0">admin</h6>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <p class="font-weight-normal mb-0">99</p>
-                            </td>
-                            <td>
-                                <p class="font-weight-normal mb-0">2,500</p>
-                            </td>
-                            <td class="align-middle">
-                                <i class="material-icons">thumb_up</i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="d-flex px-2">
-                                    <div class="my-auto">
-                                        <h6 class="mb-0">admin</h6>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <p class="font-weight-normal mb-0">99</p>
-                            </td>
-                            <td>
-                                <p class="font-weight-normal mb-0">2,500</p>
-                            </td>
-                            <td class="align-middle">
-                                <i class="material-icons">thumb_up</i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="d-flex px-2">
-                                    <div class="my-auto">
-                                        <h6 class="mb-0">admin</h6>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <p class="font-weight-normal mb-0">99</p>
-                            </td>
-                            <td>
-                                <p class="font-weight-normal mb-0">2,500</p>
-                            </td>
-                            <td class="align-middle">
-                                <i class="material-icons">thumb_up</i>
-                            </td>
-                        </tr>
-
+                                </td>
+                                <td>
+                                    <p class="font-weight-normal mb-0">{{wp.uname}}</p>
+                                </td>
+                                <td>
+                                    <p class="font-weight-normal mb-0">{{wp.score}}</p>
+                                </td>
+                                <td class="align-middle">
+                                    <i class="material-icons">thumb_up</i>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
+                    <div v-if="wps.length == 0" class="text-center">
+                        <p class="mt-4"><b>沙发还空缺，快来分享你的思路吧！</b></p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -123,10 +55,18 @@
 </template>
 
 <script>
+    import {getWriteupRank} from "@/api/writeup";
+    import {ElMessage} from "element-plus";
+
     export default {
         name: "WPPart",
         props: {
             cid: Number
+        },
+        data() {
+            return {
+                wps: []
+            }
         },
         methods: {
             enterEdit() {
@@ -136,7 +76,27 @@
                         cid: this.cid
                     }
                 })
+            },
+            getWriteupRank() {
+                getWriteupRank(this.cid).then((res) => {
+                    if (res.status === 200 && res.data.flag === true) {
+                        this.wps = res.data.data
+                    } else {
+                        ElMessage({
+                            message: res.data.msg,
+                            type: 'warning',
+                        })
+                    }
+                }).catch((error) => {
+                    ElMessage({
+                        message: error,
+                        type: 'error',
+                    })
+                })
             }
+        },
+        mounted() {
+            this.getWriteupRank()
         }
     }
 </script>

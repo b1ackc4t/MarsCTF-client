@@ -124,7 +124,10 @@ const router = createRouter({
                     path: '/admin/writeupView/:wid',
                     name: 'writeupView',
                     component: () => import('../views/admin/writeup/WriteupView'),
-                    props: true
+                    props: route => ({
+                        type: route.query.type,
+                        wid: route.params.wid
+                    })
                 }
             ]
         },

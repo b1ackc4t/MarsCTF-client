@@ -14,7 +14,7 @@
                     </el-input>
                 </el-row>
                 <el-row class="mb-3">
-                    <md-editor class="text-start mt-0 pt-0" v-model="wpInfo.text" theme="github"/>
+                    <md-editor class="text-start mt-0 pt-0" v-model="wpInfo.text" theme="github" @onUploadImg="uploadImage"/>
                 </el-row>
 
                 <el-row class="mb-3">
@@ -53,23 +53,6 @@
                 </el-row>
 
             </el-form>
-<!--            <el-dialog-->
-<!--                    v-model="dialogVisible"-->
-<!--                    :title="dialogTitles[dialogStatus]"-->
-<!--                    width="30%"-->
-<!--                    destroy-on-close-->
-<!--            >-->
-<!--                <el-form ref="formRef" :model="wpInfo" label-width="100px">-->
-
-<!--                </el-form>-->
-
-<!--                <template #footer>-->
-<!--              <span class="dialog-footer">-->
-<!--                <el-button @click="dialogVisible = false">Cancel</el-button>-->
-<!--                <el-button type="primary">Confirm</el-button>-->
-<!--              </span>-->
-<!--                </template>-->
-<!--            </el-dialog>-->
         </BodyCard>
     </div>
 
@@ -81,6 +64,8 @@
     import BodyCard from "@/components/card/BodyCard";
     import {saveWriteup} from "@/api/writeup";
     import {ElMessage} from "element-plus";
+    import {uploadImageForWP} from "@/api/file";
+    import {server} from "@/api/config";
 
     var sep = ' '
     export default {
@@ -113,10 +98,6 @@
             }
         },
         methods: {
-            // openDialog() {
-            //     this.dialogStatus = 'save'
-            //     this.dialogVisible = true
-            // },
             showInput() {
                 this.inputVisible = true
                 this.$nextTick(() => {
@@ -148,6 +129,23 @@
                         type: 'error',
                     })
                 })
+            },
+            uploadImage(files, callback) {
+                var urls = []
+                for (let index in files) {
+                    uploadImageForWP(files[index]).then((res) => {
+                        if (res.status === 200 && res.data.flag === true) {
+                            urls.push(`${server}${res.data.data}`)
+                        }
+                    }).catch((error) => {
+                        ElMessage({
+                            message: error,
+                            type: 'error',
+                        })
+                    })
+                }
+                console.log(urls)
+                callback(urls)
             }
         }
     }

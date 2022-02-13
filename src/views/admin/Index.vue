@@ -78,4 +78,7 @@
         background-color: white;
 
     }
+    .badge, .btn {
+        text-transform: none;
+    }
 </style>
