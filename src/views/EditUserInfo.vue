@@ -31,7 +31,7 @@
                                 <textarea class="form-control" placeholder="签名" v-model="newSign"></textarea>
                             </div>
                             <div class="float-end">
-                                <button class="btn btn-primary mb-0" type="submit" @click="updateMe">commit</button>
+                                <button class="btn btn-primary mb-0" @click="updateMe">commit</button>
 
                             </div>
                         </form>
@@ -77,7 +77,7 @@
                 }).then((res) => {
                     if (res.status === 200) {
                         if (res.data.flag) {
-                            this.$router.go(-1);
+                            this.$router.push('/myProfile');
                         } else {
                             alert("你的名称已经存在了")
                         }
@@ -87,20 +87,20 @@
                     console.log(error)
                 })
             },
+            startup() {
+                if (this.user != null) {
+                    this.uid = this.user.uid
+                    this.newName = "un gn" in this.user ? this.user.sign : ""
+                }
+            }
         },
         watch: {
+            user() {
+                this.startup()
+            }
         },
         mounted() {
-            if (this.user != null) {
-                this.uid = this.user.uid
-                this.newName = "uname" in this.user ? this.user.uname : ""
-                if ("sex" in this.user) {
-                    this.newSex = this.user.sex ? "female" : "male"
-                }
-                this.newSkill = "skill" in this.user ? this.user.skill : ""
-                this.newUnit = "unit" in this.user ? this.user.unit : ""
-                this.newSign = "sign" in this.user ? this.user.sign : ""
-            }
+            this.startup()
         }
     }
 </script>

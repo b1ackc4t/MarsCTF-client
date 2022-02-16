@@ -130,3 +130,10 @@ export function getAllUserByPage(pageSize, pageNum) {
         method: 'get'
     })
 }
+
+export function getUserByWidForUser(uid) {
+    return requests({
+        url: `/api/user/${uid}`,
+        method: 'get'
+    })
+}

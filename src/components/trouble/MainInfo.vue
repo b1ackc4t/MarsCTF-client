@@ -15,7 +15,7 @@
                     <p>
                         涉及知识点：
                         <span v-if="challenge.tags != null && challenge.tags.length > 0">
-                            <span class="badge bg-gradient-primary clickAble me-1" v-for="tag in challenge.tags" :key="tag" @click="clickTag(tag)">
+                            <span class="badge bg-gradient-primary clickAble me-1" v-for="tag in challenge.tagsView" :key="tag" @click="clickTag(tag)">
                             {{tag}}
                             </span>
                         </span>

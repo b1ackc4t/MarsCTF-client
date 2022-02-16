@@ -41,7 +41,7 @@
                             <router-link to="/admin"><a class="nav-link d-flex align-items-center justify-content-center fs-6" aria-current="page" href="#"><i class="material-icons opacity-10">settings</i>管理平台</a></router-link>
                         </li>
                         <li class="nav-item" v-if="checkUser">
-                            <router-link to="/profile"><a class="nav-link d-flex align-items-center justify-content-center fs-6" aria-current="page" href="#"><i class="material-icons opacity-10">person</i>{{username}}</a></router-link>
+                            <router-link to="/myProfile"><a class="nav-link d-flex align-items-center justify-content-center fs-6" aria-current="page" href="#"><i class="material-icons opacity-10">person</i>{{username}}</a></router-link>
                         </li>
                         <li class="nav-item" v-if="checkUser">
                             <a class="nav-link d-flex align-items-center justify-content-center fs-6" href="#" @click="logout"><i class="material-icons opacity-10">logout</i>退出</a>

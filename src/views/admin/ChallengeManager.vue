@@ -103,12 +103,12 @@
             },
             removeChallengeSubmit(challenge) {
                 ElMessageBox.confirm(
-                    '确定要删除该题吗？',
-                    'Warning',
+                    '确定要删除该题吗？（此操作还会删除此题目所有wp，请确保安全再操作）',
+                    '危险',
                     {
                         confirmButtonText: 'OK',
                         cancelButtonText: 'Cancel',
-                        type: 'warning',
+                        type: 'error',
                     }
                 ).then(() => {
                     removeChallenge(challenge).then((res) => {

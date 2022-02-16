@@ -68,8 +68,8 @@
             </el-row>
             <el-row>
                 <el-col :span="16">
-                    <el-form-item label="题目分类" prop="tname">
-                        <el-select v-model="currentChallenge.tname" placeholder="Select">
+                    <el-form-item label="题目分类" prop="tid">
+                        <el-select v-model="currentChallenge.tid" placeholder="Select">
                             <el-option
                                     v-for="item in challengeTypes"
                                     :key="item.value"
@@ -141,7 +141,7 @@
                 currentChallenge: {
                     cname: '',
                     descr: '',
-                    tname: 'web',
+                    tid: 1,
                     exposed: true,
                     tags: [],
                     fid: null,
@@ -156,27 +156,27 @@
                 challengeTypes: [
                     {
                         label: 'Web',
-                        value: 'web'
+                        value: 1
                     },
                     {
                         label: 'Pwn',
-                        value: 'pwn'
+                        value: 2
                     },
                     {
                         label: 'Re',
-                        value: 're'
+                        value: 3
                     },
                     {
                         label: 'Crypto',
-                        value: 'crypto'
+                        value: 4
                     },
                     {
                         label: 'Misc',
-                        value: 'misc'
+                        value: 5
                     },
                     {
                         label: 'Other',
-                        value: 'other'
+                        value: 6
                     }
                 ],
                 rules: {
@@ -216,7 +216,7 @@
                             trigger: 'blur',
                         }
                     ],
-                    tname: [
+                    tid: [
                         {
                             required: true,
                             message: '类型不能为空',
@@ -240,8 +240,8 @@
                             })
                         }
                         this.originFid = this.currentChallenge.fid
-                        for (let index in this.currentChallenge.tags) {
-                            this.currentChallenge.tags[index]= [this.chaTagMap.get(this.currentChallenge.tags[index]), this.currentChallenge.tags[index]]
+                        for (let index in this.currentChallenge.tagsView) {
+                            this.currentChallenge.tags[index]= [this.chaTagMap.get(this.currentChallenge.tagsView[index]), this.currentChallenge.tags[index]]
                         }
                     }
                 })
@@ -262,10 +262,10 @@
                             }
                             for (let tag in tagTypes[type]) {
                                 item.children.push({
-                                    label: tagTypes[type][tag],
-                                    value: tagTypes[type][tag]
+                                    label: tagTypes[type][tag][1],
+                                    value: tagTypes[type][tag][0]
                                 })
-                                this.chaTagMap.set(tagTypes[type][tag], type)
+                                this.chaTagMap.set(tagTypes[type][tag][1], type)
                             }
                             this.tagOptions.push(item)
                         }
@@ -383,5 +383,10 @@
 </script>
 
 <style scoped>
-
+    .tag-panel {
+        background-color: white;
+    }
+    .foot {
+        margin-left: 104px;
+    }
 </style>

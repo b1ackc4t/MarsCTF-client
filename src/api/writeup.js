@@ -33,10 +33,11 @@ export function getUnCheckWriteupByPageForAdmin(pageSize, pageNum) {
     })
 }
 
-export function passWriteup(wid, score) {
+export function passWriteup(wid, score, comment) {
     let form = new FormData()
     form.append("wid", wid)
     form.append('score', score)
+    form.append('comment', comment)
     return requests({
         url: '/api/admin/writeup/uncheck/passWriteup',
         method: 'post',
@@ -44,10 +45,11 @@ export function passWriteup(wid, score) {
     })
 }
 
-export function rejectWriteup(wid, score) {
+export function rejectWriteup(wid, score, comment) {
     let form = new FormData()
     form.append("wid", wid)
     form.append('score', score)
+    form.append('comment', comment)
     return requests({
         url: '/api/admin/writeup/uncheck/rejectWriteup',
         method: 'post',
@@ -100,5 +102,41 @@ export function getWriteupRank(cid) {
     return requests({
         url: `/api/user/writeupRank/${cid}`,
         method: 'get'
+    })
+}
+
+export function getWriteupByPageForMe(pageSize, pageNum) {
+    return requests({
+        url: `/api/user/writeup/getMe/${pageSize}/${pageNum}`,
+        method: 'get'
+    })
+}
+
+export function getWriteupByWidForMe(wid) {
+    return requests({
+        url: `/api/user/writeup/getMe/${wid}`,
+        method: 'get'
+    })
+}
+
+export function removeWriteupForUser(writeup) {
+    let form = new FormData()
+    form.append("action", "remove")
+    form.append('data', JSON.stringify(writeup))
+    return requests({
+        url: '/api/user/writeup',
+        method: 'post',
+        data: form
+    })
+}
+
+export function updateWriteup(writeup) {
+    let form = new FormData()
+    form.append("action", "update")
+    form.append('data', JSON.stringify(writeup))
+    return requests({
+        url: '/api/user/writeup',
+        method: 'post',
+        data: form
     })
 }

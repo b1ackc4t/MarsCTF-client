@@ -66,8 +66,8 @@
             </el-row>
             <el-row>
                 <el-col :span="16">
-                    <el-form-item label="题目分类" prop="tname">
-                        <el-select v-model="currentChallenge.tname" placeholder="Select">
+                    <el-form-item label="题目分类" prop="tid">
+                        <el-select v-model="currentChallenge.tid" placeholder="Select">
                             <el-option
                                     v-for="item in challengeTypes"
                                     :key="item.value"
@@ -124,6 +124,7 @@
     import {download, removeFile} from "@/api/file";
     import { ElMessage } from 'element-plus'
     import {getChaTagAndTypeForAdmin} from "@/api/chaTag";
+    import {getAllType} from "@/api/chaType";
 
     export default {
         name: "AddChallengeView",
@@ -136,36 +137,11 @@
                     multiple: true,
                     checkStrictly: true,
                 },
-                challengeTypes: [
-                    {
-                        label: 'Web',
-                        value: 'web'
-                    },
-                    {
-                        label: 'Pwn',
-                        value: 'pwn'
-                    },
-                    {
-                        label: 'Re',
-                        value: 're'
-                    },
-                    {
-                        label: 'Crypto',
-                        value: 'crypto'
-                    },
-                    {
-                        label: 'Misc',
-                        value: 'misc'
-                    },
-                    {
-                        label: 'Other',
-                        value: 'other'
-                    }
-                ],
+                challengeTypes: [],
                 currentChallenge: {
                     cname: '',
                     descr: '',
-                    tname: 'web',
+                    tid: 1,
                     exposed: true,
                     tags: [],
                     fid: null,
@@ -210,7 +186,7 @@
                             trigger: 'blur',
                         }
                     ],
-                    tname: [
+                    tid: [
                         {
                             required: true,
                             message: '类型不能为空',
@@ -300,8 +276,8 @@
                             }
                             for (let tag in tagTypes[type]) {
                                 item.children.push({
-                                    label: tagTypes[type][tag],
-                                    value: tagTypes[type][tag]
+                                    label: tagTypes[type][tag][1],
+                                    value: tagTypes[type][tag][0]
                                 })
                             }
                             this.tagOptions.push(item)
@@ -336,9 +312,36 @@
                         type: 'error',
                     })
                 })
+            },
+            getTypes() {
+                getAllType().then((res) => {
+                    if (res.status === 200 && res.data.flag === true) {
+                        let types = res.data.data
+                        for (let index in types) {
+                            this.challengeTypes.push({
+                                label: this.toFirstUpper(types[index].tname),
+                                value: types[index].tid
+                            })
+                        }
+                    } else {
+                        ElMessage({
+                            message: res.data.msg,
+                            type: 'warning',
+                        })
+                    }
+                }).catch((error) => {
+                    ElMessage({
+                        message: error,
+                        type: 'error',
+                    })
+                })
+            },
+            toFirstUpper(value) {
+                return value.slice(0, 1).toUpperCase() + value.slice(1)
             }
         },
         mounted() {
+            this.getTypes()
             this.setTagOptions()
         }
     }

@@ -13,7 +13,16 @@
             </span>
         </el-row>
         <el-row>
-            <h2>{{wpInfo.title}}</h2>
+            <h2>
+                {{wpInfo.title}}
+                <el-tag
+                        :type="statusClass"
+                        v-if="isMe"
+                >
+                    {{ statusMsg }}
+                </el-tag>
+            </h2>
+
         </el-row>
 
     </BodyCard>
@@ -27,17 +36,34 @@
         name: "WPHeader",
         components: {BodyCard},
         props: {
-            wpInfo: Object
+            wpInfo: Object,
+            isMe: Boolean
         },
         data() {
             return {
-
+                statusMsg: '',
+                statusClass: ''
             }
         },
         methods: {
             getFormatTimeForArticle(time) {
                 return getFormatTimeForArticle(time)
             },
+        },
+        mounted() {
+            console.log(this.wpInfo)
+            if (this.wpInfo.done) {
+                if (this.wpInfo.status) {
+                    this.statusClass = 'success'
+                    this.statusMsg = '已通过'
+                } else {
+                    this.statusClass = 'danger'
+                    this.statusMsg = '已驳回'
+                }
+            } else {
+                this.statusClass = 'warning'
+                this.statusMsg = '未审核'
+            }
         }
     }
 </script>

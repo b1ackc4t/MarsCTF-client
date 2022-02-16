@@ -33,6 +33,10 @@
                 <el-icon><collection-tag /></el-icon>
                 <span>标签管理</span>
             </el-menu-item>
+            <el-menu-item index="/admin/chaTypeManager">
+                <el-icon><copy-document /></el-icon>
+                <span>类别管理</span>
+            </el-menu-item>
             <el-sub-menu index="2">
                 <template #title>
                     <el-icon><document /></el-icon>
@@ -50,7 +54,7 @@
 
 <script>
     import hubuIcon from '@/assets/img/hubu.jpg'
-    import {Avatar, Chicken, CollectionTag, Document} from '@element-plus/icons-vue'
+    import {Avatar, Chicken, CollectionTag, Document, CopyDocument} from '@element-plus/icons-vue'
     export default {
         name: "Aside",
         data() {
@@ -63,7 +67,8 @@
             Avatar,
             Chicken,
             CollectionTag,
-            Document
+            Document,
+            CopyDocument
         },
         computed: {
             isCollapse() {

@@ -61,24 +61,23 @@
             </el-form>
         </BodyCard>
     </div>
-
 </template>
 
 <script>
     import BodyCard from "@/components/card/BodyCard";
-    import {saveWriteup} from "@/api/writeup";
+    import {getWriteupByWidForMe, updateWriteup} from "@/api/writeup";
     import {ElMessage} from "element-plus";
     import {uploadImageForWP} from "@/api/file";
     import {server} from "@/api/config";
 
     var sep = ' '
     export default {
-        name: "editWP",
+        name: "UpdataWP",
         components: {
             BodyCard,
         },
         props: {
-            cid: Number
+            wid: Number
         },
         data() {
             return {
@@ -117,9 +116,23 @@
             handleClose(tag) {
                 this.tmpWpTags.splice(this.tmpWpTags.indexOf(tag), 1)
             },
+            getWriteupByWidForMe() {
+                getWriteupByWidForMe(this.wid).then((res) => {
+                    if (res.status === 200 && res.data.flag === true) {
+                        this.wpInfo = res.data.data
+                        this.wpInfo.wpTags = this.wpInfo.wpTags.split(sep)
+                        this.tmpWpTags = this.wpInfo.wpTags
+                    }
+                }).catch((error) => {
+                    ElMessage({
+                        message: error,
+                        type: 'error',
+                    })
+                })
+            },
             submitWP() {
                 this.wpInfo.wpTags = this.tmpWpTags.join(sep)
-                saveWriteup(this.wpInfo).then((res) => {
+                updateWriteup(this.wpInfo).then((res) => {
                     if (res.status === 200 && res.data.flag === true) {
                         ElMessage({
                             message: res.data.msg,
@@ -152,6 +165,9 @@
                 }
 
             }
+        },
+        mounted() {
+            this.getWriteupByWidForMe()
         }
     }
 </script>

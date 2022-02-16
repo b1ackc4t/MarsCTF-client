@@ -4,28 +4,41 @@
             <UserInfo :user="user"></UserInfo>
         </div>
         <div class="row mb-4">
-            <TotalPanel></TotalPanel>
+            <OtherTotalPanel :uid="uid"></OtherTotalPanel>
         </div>
     </div>
 </template>
 
 <script>
-
+    import {getUserByWidForUser} from "@/api/user";
     import UserInfo from "@/components/profile/UserInfo";
-    import TotalPanel from "@/components/profile/TotalPanel";
+    import OtherTotalPanel from "@/components/profile/OtherTotalPanel";
+
     export default {
         name: "Profile",
-        components: {TotalPanel, UserInfo},
+        components: {OtherTotalPanel, UserInfo},
         props: {
-            user: Object
+            uid: Number
         },
         data() {
             return {
-
+                user: null
+            }
+        },
+        methods: {
+            getUserByWidForUser() {
+                getUserByWidForUser(this.uid).then((res) => {
+                    if (res.status === 200 && res.data.flag === true) {
+                        this.user = res.data.data
+                        console.log(this.user)
+                    }
+                }).catch((error) => {
+                    console.log(error)
+                })
             }
         },
         mounted() {
-
+            this.getUserByWidForUser()
         }
     }
 </script>

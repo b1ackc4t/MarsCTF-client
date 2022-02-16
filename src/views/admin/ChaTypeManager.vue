@@ -22,29 +22,18 @@
             <el-form
                     label-width="100px"
                     :rules="rules"
-                    :model="newTag"
+                    :model="newType"
                     ref="dialogForm"
             >
                 <el-form-item label="名称" prop="tgname">
-                    <el-input v-model="newTag.tgname"></el-input>
-                </el-form-item>
-                <el-form-item label="类型" prop="tid" class="text-start">
-                    <el-select class="m-2" size="large" v-model="newTag.tid">
-                        <el-option
-                                v-for="r in types"
-                                :label="r.label"
-                                :value="r.value"
-                                :key="r.value"
-                        >
-                        </el-option>
-                    </el-select>
+                    <el-input v-model="newType.tname"></el-input>
                 </el-form-item>
 
             </el-form>
             <template #footer>
               <span class="dialog-footer">
                 <el-button @click="dialogVisible = false">Cancel</el-button>
-                <el-button type="primary" @click="tagSubmit">Confirm</el-button>
+                <el-button type="primary" @click="typeSubmit">Confirm</el-button>
               </span>
             </template>
         </el-dialog>
@@ -52,10 +41,9 @@
     </el-row>
 
     <el-row>
-        <el-table :data="tagsData" style="width: 100%" stripe>
-            <el-table-column prop="tgid" label="ID" sortable/>
-            <el-table-column prop="tgname" label="名称" />
-            <el-table-column prop="tname" label="类型" />
+        <el-table :data="typesData" style="width: 100%" stripe>
+            <el-table-column prop="tid" label="ID" sortable/>
+            <el-table-column prop="tname" label="名称" />
             <el-table-column
                     label="操作"
                     align="center"
@@ -69,7 +57,7 @@
                     <el-button
                             size="mini"
                             type="danger"
-                            @click="removeTagSubmit(row)"
+                            @click="removeTypeSubmit(row)"
                     >
                         Delete
                     </el-button>
@@ -96,31 +84,29 @@
 <script>
     import {Plus} from '@element-plus/icons-vue'
     import {ElMessage, ElMessageBox} from "element-plus";
-    import {getAllChaTagByPageForAdmin, saveChaTag, updateChaTag, removeChaTag} from "@/api/chaTag";
-    import {getAllType} from "@/api/chaType";
+    import {getAllTypeByPageForAdmin, saveType, updateType, removeType} from "@/api/chaType";
 
     export default {
-        name: "ChaTagManager",
+        name: "ChaTypeManager",
         data() {
             return {
                 Plus,
                 dialogVisible: false,
                 dialogTitles: {
-                    save: '添加标签',
-                    update: '修改标签'
+                    save: '添加类别',
+                    update: '修改类别'
                 },
                 dialogStatus: 'save',
                 pageSize: 10,
                 total: 100,
                 currentPage: 1,
-                tagsData: [],
-                newTag: {
-                    tgname: '',
-                    tid: 1
+                typesData: [],
+                newType: {
+                    tname: 'other'
                 },
                 types: [],
                 rules: {
-                    tgname: [
+                    tname: [
                         {
                             required: true,
                             message: '名称不能为空',
@@ -138,16 +124,16 @@
         },
         methods: {
             openSaveDialog() {
-                this.flushTag()
+                this.flushType()
                 this.dialogStatus = 'save'
                 this.dialogVisible = true
             },
-            getChaTagPage() {
-                getAllChaTagByPageForAdmin(this.pageSize, this.currentPage).then((res) => {
+            getChaTypePage() {
+                getAllTypeByPageForAdmin(this.pageSize, this.currentPage).then((res) => {
                     if (res.status === 200 && res.data.flag === true) {
                         this.total = res.data.data.total
                         this.currentPage = res.data.data.pageNum
-                        this.tagsData = res.data.data.list
+                        this.typesData = res.data.data.list
                     }
                 }).catch((error) => {
                     ElMessage({
@@ -156,65 +142,52 @@
                     })
                 })
             },
-            getAllTypeSubmit() {
-                getAllType().then((res) => {
-                    if (res.status === 200 && res.data.flag === true) {
-                        for (let item in res.data.data) {
-                            this.types.push({
-                                label: res.data.data[item].tname,
-                                value: res.data.data[item].tid
-                            })
-                        }
-                    }
-                })
-            },
-            flushTag() {
-                this.newTag = {
-                    tgname: '',
-                    tid: 1,
+            flushType() {
+                this.newType = {
+                    tname: ''
                 }
             },
-            tagSubmit() {
+            typeSubmit() {
                 this.$refs.dialogForm.validate((vRes) => {
                     if (vRes) {
                         if (this.dialogStatus === 'save') {
-                            saveChaTag(this.newTag).then((res) => {
+                            saveType(this.newType).then((res) => {
                                 if (res.status === 200 && res.data.flag === true) {
                                     ElMessage({
                                         message: res.data.msg,
                                         type: 'success',
                                     })
-                                    this.getChaTagPage()
-                                    this.flushTag()
+                                    this.getChaTypePage()
+                                    this.flushType()
                                 } else {
                                     ElMessage({
                                         message: res.data.msg,
                                         type: 'warning',
                                     })
-                                    this.flushTag()
+                                    this.flushType()
                                 }
                             }).catch((error) => {
                                 ElMessage({
                                     message: error,
                                     type: 'error',
                                 })
-                                this.flushTag()
+                                this.flushType()
                             })
                         } else if (this.dialogStatus === 'update') {
-                            updateChaTag(this.newTag).then((res) => {
+                            updateType(this.newType).then((res) => {
                                 if (res.status === 200 && res.data.flag === true) {
                                     ElMessage({
                                         message: res.data.msg,
                                         type: 'success',
                                     })
-                                    this.getChaTagPage()
-                                    this.flushTag()
+                                    this.getChaTypePage()
+                                    this.flushType()
                                 } else {
                                     ElMessage({
                                         message: res.data.msg,
                                         type: 'warning',
                                     })
-                                    this.flushTag()
+                                    this.flushType()
                                 }
                             })
                         }
@@ -222,23 +195,23 @@
                     }
                 })
             },
-            removeTagSubmit(tag) {
+            removeTypeSubmit(type) {
                 ElMessageBox.confirm(
-                    '确定要删除该标签吗？',
-                    'Warning',
+                    '确定要删除该类别吗？(此操作会删除该类别的所有题目、标签，包括题目的wp，请确保安全再操作)',
+                    '危险',
                     {
                         confirmButtonText: 'OK',
                         cancelButtonText: 'Cancel',
-                        type: 'warning',
+                        type: 'error',
                     }
                 ).then(() => {
-                    removeChaTag(tag).then((res) => {
+                    removeType(type).then((res) => {
                         if (res.status === 200 && res.data.flag === true) {
                             ElMessage({
                                 message: res.data.msg,
                                 type: 'success',
                             })
-                            this.getChaTagPage()
+                            this.getChaTypePage()
                         } else {
                             ElMessage({
                                 message: res.data.msg,
@@ -250,23 +223,22 @@
                     })
                 })
             },
-            openUpdateDialog(tag) {
+            openUpdateDialog(type) {
                 this.dialogStatus = 'update'
                 this.dialogVisible = true
-                this.newTag = tag
+                this.newType = type
             },
             handleCurrentChange(currentP) {
                 this.currentPage = currentP
-                this.getChaTagPage()
+                this.getChaTypePage()
             },
             handleSizeChange(currentS) {
                 this.pageSize = currentS
-                this.getChaTagPage()
+                this.getChaTypePage()
             }
         },
         mounted() {
-            this.getChaTagPage()
-            this.getAllTypeSubmit()
+            this.getChaTypePage()
         }
 
     }

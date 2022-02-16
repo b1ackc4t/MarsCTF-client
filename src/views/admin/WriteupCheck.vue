@@ -28,7 +28,7 @@
             </el-form-item>
             <el-form-item label="评价" label-width="50px" prop="remark">
                 <el-input
-                        v-model="checkInfo.remark"
+                        v-model="checkInfo.comment"
                         :rows="2"
                         type="textarea"
                         placeholder="Please input"
@@ -105,7 +105,7 @@
                 checkInfo: {
                     wid: null,
                     score: null,
-                    remark: ''
+                    comment: ''
                 },
                 rules: {
                     score: [
@@ -182,7 +182,7 @@
                 this.$refs.dialogForm.validate((vRes) => {
                     if (vRes) {
                         if (this.dialogStatus === 'pass') {
-                            passWriteup(this.checkInfo.wid, this.checkInfo.score).then((res) => {
+                            passWriteup(this.checkInfo.wid, this.checkInfo.score, this.checkInfo.comment).then((res) => {
                                 if (res.status === 200 && res.data.flag === true) {
                                     ElMessage({
                                         message: res.data.msg,
@@ -202,7 +202,7 @@
                                 })
                             })
                         } else if (this.dialogStatus === 'reject') {
-                            rejectWriteup(this.checkInfo.wid, this.checkInfo.score).then((res) => {
+                            rejectWriteup(this.checkInfo.wid, this.checkInfo.score, this.checkInfo.comment).then((res) => {
                                 if (res.status === 200 && res.data.flag === true) {
                                     ElMessage({
                                         message: res.data.msg,

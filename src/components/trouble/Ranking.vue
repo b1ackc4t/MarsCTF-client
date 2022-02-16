@@ -26,7 +26,10 @@
                                 <td>
                                     <div class="d-flex px-2">
                                         <div class="my-auto">
-                                            <h6 class="mb-0">{{rank.uname}}</h6>
+                                            <router-link :to="{ name: 'profile', params: { uid: rank.uid }}">
+                                                <h6 class="mb-0">{{rank.uname}}</h6>
+                                            </router-link>
+
                                         </div>
                                     </div>
                                 </td>

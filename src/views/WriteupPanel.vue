@@ -65,7 +65,6 @@
                 getWriteupByPageForUser(this.pageSize, this.currentPage).then((res) => {
                     if (res.status === 200 && res.data.flag === true) {
                         this.total = res.data.data.total
-                        console.log(this.total)
                         this.currentPage = res.data.data.pageNum
                         this.wps = res.data.data.list
                     }

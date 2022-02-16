@@ -27,9 +27,31 @@ const router = createRouter({
                     })
                 },
                 {
-                    path: '/profile',
+                    path: '/myProfile',
+                    name: 'myProfile',
+                    component: () => import('../views/MyProfile'),
+                    children: [
+                        {
+                            path: '/myProfile',
+                            redirect: '/myProfile/challengeHistory'
+                        },
+                        {
+                            path: '/myProfile/challengeHistory',
+                            name: 'challengeHistory',
+                            component: () => import('../views/myProfile/ChallengeHistory'),
+                        },
+                        {
+                            path: '/myProfile/myWriteupPanel',
+                            name: 'myWriteupPanel',
+                            component: () => import('../views/myProfile/MyWriteupPanel'),
+                        },
+                    ]
+                },
+                {
+                    path: '/profile/:uid',
                     name: 'profile',
-                    component: () => import('../views/Profile')
+                    component: () => import('../views/Profile'),
+                    props: true
                 },
                 {
                     path: '/editUserInfo',
@@ -70,6 +92,18 @@ const router = createRouter({
                     path: '/viewWP/:wid',
                     name: 'viewWP',
                     component: () => import('../views/ViewWP'),
+                    props: true
+                },
+                {
+                    path: '/myViewWP/:wid',
+                    name: 'myViewWP',
+                    component: () => import('../views/MyViewWP'),
+                    props: true
+                },
+                {
+                    path: '/updateWP/:wid',
+                    name: 'updateWP',
+                    component: () => import('../views/UpdataWP'),
                     props: true
                 },
             ]
@@ -128,7 +162,12 @@ const router = createRouter({
                         type: route.query.type,
                         wid: route.params.wid
                     })
-                }
+                },
+                {
+                    path: '/admin/chaTypeManager',
+                    name: 'chaTypeManager',
+                    component: () => import('../views/admin/ChaTypeManager')
+                },
             ]
         },
     ]

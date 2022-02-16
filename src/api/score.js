@@ -13,3 +13,17 @@ export function getRankForChallenge(cid) {
         method: 'get'
     })
 }
+
+export function getScoreChart(uid) {
+    return requests({
+        url: `/api/user/userScore/scoreChart/${uid}`,
+        method: 'get'
+    })
+}
+
+export function getChallengeStatus(uid) {
+    return requests({
+        url: `/api/user/userScore/challengeStatus/${uid}`,
+        method: 'get'
+    })
+}
