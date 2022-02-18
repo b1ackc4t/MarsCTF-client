@@ -80,7 +80,9 @@ const router = createRouter({
                     path: '/learnPanel',
                     name: 'learnPanel',
                     component: () => import('../views/LearnPanel'),
-                    props: true
+                    props: route => ({
+                        type: route.query.type,
+                    })
                 },
                 {
                     path: '/editWP/:cid',
@@ -167,6 +169,22 @@ const router = createRouter({
                     path: '/admin/chaTypeManager',
                     name: 'chaTypeManager',
                     component: () => import('../views/admin/ChaTypeManager')
+                },
+                {
+                    path: '/admin/learnManager',
+                    name: 'learnManager',
+                    component: () => import('../views/admin/LearnManager')
+                },
+                {
+                    path: '/admin/learning/add',
+                    name: 'addLearningView',
+                    component: () => import('../views/admin/learn/AddLearningView')
+                },
+                {
+                    path: '/admin/learning/edit/:lid',
+                    name: 'editLearningView',
+                    component: () => import('../views/admin/learn/EditLearningView'),
+                    props: true
                 },
             ]
         },

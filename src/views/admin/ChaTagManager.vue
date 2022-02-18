@@ -56,6 +56,7 @@
             <el-table-column prop="tgid" label="ID" sortable/>
             <el-table-column prop="tgname" label="名称" />
             <el-table-column prop="tname" label="类型" />
+            <el-table-column prop="chaNum" label="题目总数" />
             <el-table-column
                     label="操作"
                     align="center"

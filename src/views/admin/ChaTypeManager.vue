@@ -44,6 +44,7 @@
         <el-table :data="typesData" style="width: 100%" stripe>
             <el-table-column prop="tid" label="ID" sortable/>
             <el-table-column prop="tname" label="名称" />
+            <el-table-column prop="chaNum" label="题目总数" />
             <el-table-column
                     label="操作"
                     align="center"

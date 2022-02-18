@@ -47,3 +47,18 @@ export function uploadImageForWP(fileObj) {
         data:form
     })
 }
+
+export function uploadImageForLearn(fileObj) {
+    let form = new FormData()
+    form.append("file", fileObj)
+    form.append("lid", 99999999)
+    return requests({
+        url: '/api/admin/learning/uploadImage',
+        method: 'post',
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        },
+        data:form
+    })
+}
+

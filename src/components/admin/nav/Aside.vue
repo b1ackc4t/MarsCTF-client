@@ -45,6 +45,10 @@
                 <el-menu-item index="/admin/writeupCheck">Writeup审核</el-menu-item>
                 <el-menu-item index="/admin/writeupManager">Writeup管理</el-menu-item>
             </el-sub-menu>
+            <el-menu-item index="/admin/learnManager">
+                <el-icon><notebook /></el-icon>
+                <span>学习管理</span>
+            </el-menu-item>
 
         </el-menu>
         </el-scrollbar>
@@ -54,7 +58,7 @@
 
 <script>
     import hubuIcon from '@/assets/img/hubu.jpg'
-    import {Avatar, Chicken, CollectionTag, Document, CopyDocument} from '@element-plus/icons-vue'
+    import {Avatar, Chicken, CollectionTag, Document, CopyDocument, Notebook} from '@element-plus/icons-vue'
     export default {
         name: "Aside",
         data() {
@@ -68,7 +72,8 @@
             Chicken,
             CollectionTag,
             Document,
-            CopyDocument
+            CopyDocument,
+            Notebook
         },
         computed: {
             isCollapse() {

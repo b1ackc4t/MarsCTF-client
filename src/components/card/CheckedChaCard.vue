@@ -138,7 +138,7 @@
     .card .card-footer{padding:0;padding-top:10px;margin:0 15px 10px;border-radius:0;justify-content:space-between;align-items:center;}
     .card .card-footer .stats{color:#000000;font-size:12px;line-height:22px;}
     .card [class*="card-header-"]{margin:0px 15px 0;padding:0;position:relative;}
-    .card [class*="card-header-"] .card-icon{border-radius:3px;background-color: #efef02;padding:15px;margin-top:-20px;margin-right:15px;float:left;width: 30%;height: 30%;text-align: center;}
+    .card [class*="card-header-"] .card-icon{border-radius:3px;background-color: #efef02;padding:0;margin-top:-20px;margin-right:15px;float:left;width: 30%;height: 30%;text-align: center;}
     .card-stats .card-header.card-header-icon{text-align:right;}
     .card-stats .card-header .card-icon + .card-category{padding-top:10px;}
     .card-stats .card-header.card-header-icon .card-category{margin:0;}

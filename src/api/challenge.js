@@ -110,3 +110,10 @@ export function getChallengeByTag(pageSize, pageNum, tag) {
         }
     })
 }
+
+export function getSimpleAllChallenge() {
+    return requests({
+        url: '/api/challenge/simple',
+        method: 'get',
+    })
+}

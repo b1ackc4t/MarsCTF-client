@@ -1,21 +1,9 @@
 <template>
-        <el-radio-group v-model="currentType" size="large" style="width: 100%" class="learn-list">
+        <el-radio-group v-model="value" size="large" style="width: 100%" class="learn-list" @change="typeChange">
             <div class="type-select">
                 <div v-for="(type, index) in types" :key="type.tid">
-                    <el-radio-button :label="toFirstUpper(type.tname)" :class="getClass(index)"></el-radio-button>
+                    <el-radio-button :label="type.tname" :class="getClass(index)">{{toFirstUpper(type.tname)}}</el-radio-button>
                 </div>
-<!--                <div>-->
-<!--                    <el-radio-button label="New York2" class="type-button"></el-radio-button>-->
-<!--                </div>-->
-<!--                <div>-->
-<!--                    <el-radio-button label="New York3" class="type-button"></el-radio-button>-->
-<!--                </div>-->
-<!--                <div>-->
-<!--                    <el-radio-button label="New York4" class="type-button"></el-radio-button>-->
-<!--                </div>-->
-<!--                <div>-->
-<!--                    <el-radio-button label="New York5" class="type-button-last"></el-radio-button>-->
-<!--                </div>-->
             </div>
         </el-radio-group>
 </template>
@@ -26,10 +14,22 @@
 
     export default {
         name: "LearnList",
+        props: {
+            modelValue: Array,
+        },
+        computed: {
+            value: {
+                get() {
+                    return this.modelValue
+                },
+                set(value) {
+                    this.$emit('update:modelValue', value)
+                }
+            }
+        },
         data() {
             return {
-                currentType: 'Web',
-                types: []
+                types: [],
             }
         },
         methods: {
@@ -37,6 +37,10 @@
                 getAllType().then((res) => {
                     if (res.status === 200 && res.data.flag === true) {
                         this.types = res.data.data
+                        this.types.unshift({
+                            tname: 'all',
+
+                        })
                     } else {
                         ElMessage({
                             message: res.data.msg,
@@ -61,6 +65,14 @@
                 } else {
                     return 'type-button'
                 }
+            },
+            typeChange(labelName) {
+                this.$router.push({
+                    name: 'learnPanel',
+                    query: {
+                        type: labelName
+                    }
+                })
             },
             startup() {
                 this.getTypes()
