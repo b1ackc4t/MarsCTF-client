@@ -117,3 +117,15 @@ export function getSimpleAllChallenge() {
         method: 'get',
     })
 }
+
+
+export function searchChallengePage(key, value, pageSize, pageNum) {
+    return requests({
+        url: `/api/admin/challenge/search/${pageSize}/${pageNum}`,
+        method: 'get',
+        params: {
+            key: key,
+            value: value
+        }
+    })
+}

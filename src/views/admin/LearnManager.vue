@@ -1,12 +1,7 @@
 <template>
     <el-row>
         <el-form :inline="true" class="demo-form-inline">
-            <el-form-item>
-                <el-input placeholder="name"></el-input>
-            </el-form-item>
-            <el-form-item>
-                <el-button type="primary" @click="onSubmit">Query</el-button>
-            </el-form-item>
+            <SearchItem :options="options" @searchHandle="searchLearnPage"></SearchItem>
             <el-form-item>
                 <router-link :to="{name: 'addLearningView'}">
                     <el-button type="success" :icon="Plus" circle></el-button>
@@ -61,11 +56,13 @@
 
 <script>
     import {Plus} from "@element-plus/icons-vue";
-    import {getLearningByPageForAdmin, removeLearning} from "@/api/learning";
+    import {getLearningByPageForAdmin, removeLearning, searchLearnPage} from "@/api/learning";
     import {ElMessage, ElMessageBox} from "element-plus";
+    import SearchItem from "@/components/smalltool/SearchItem";
 
     export default {
         name: "LearnManager",
+        components: {SearchItem},
         data() {
             return {
                 Plus,
@@ -73,9 +70,45 @@
                 total: 100,
                 currentPage: 1,
                 learnsData: [],
+                options: [
+                    {
+                        value: 'lid',
+                        label: 'ID'
+                    },
+                    {
+                        value: 'uname',
+                        label: '作者'
+                    },
+                    {
+                        value: 'title',
+                        label: '名称'
+                    },
+                    {
+                        value: 'tname',
+                        label: '类别'
+                    },
+                    {
+                        value: 'creTime',
+                        label: '发表时间'
+                    },
+                ]
             }
         },
         methods: {
+            searchLearnPage(key, value) {
+                searchLearnPage(key, value, this.pageSize, this.currentPage).then((res) => {
+                    if (res.status === 200 && res.data.flag === true) {
+                        this.total = res.data.data.total
+                        this.currentPage = res.data.data.pageNum
+                        this.learnsData = res.data.data.list
+                    }
+                }).catch((error) => {
+                    ElMessage({
+                        message: error,
+                        type: 'error',
+                    })
+                })
+            },
             getLearningByPageForAdmin() {
                 getLearningByPageForAdmin(this.pageSize, this.currentPage).then((res) => {
                     if (res.status === 200 && res.data.flag === true) {

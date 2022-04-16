@@ -27,3 +27,14 @@ export function getChallengeStatus(uid) {
         method: 'get'
     })
 }
+
+export function searchUserScorePage(key, value, pageSize, pageNum) {
+    return requests({
+        url: `/api/userScore/search/${pageSize}/${pageNum}`,
+        method: 'get',
+        params: {
+            key: key,
+            value: value
+        }
+    })
+}

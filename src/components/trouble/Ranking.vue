@@ -74,11 +74,13 @@
                             type: 'warning',
                         })
                     }
+                    this.$emit("load5")
                 }).catch((error) => {
                     ElMessage({
                         message: error,
                         type: 'error',
                     })
+                    this.$emit("load5")
                 })
             },
             getFormatTime(date) {

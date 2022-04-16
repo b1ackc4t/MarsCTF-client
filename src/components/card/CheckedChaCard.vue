@@ -3,14 +3,13 @@
         <div class="card card-stats" :style="{'background-color':bgColor}">
             <div :class="'card-header text-border card-header-'+theme+' card-header-icon btn-div'" data-header-animation="true" @click="enterTrouble">
                 <div class="card-icon">
-                    <i class="material-icons" style="color: black">check</i>
+                    <svg class="svg-icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-ba633cb8=""><path fill="currentColor" d="M77.248 415.04a64 64 0 0 1 90.496 0l226.304 226.304L846.528 188.8a64 64 0 1 1 90.56 90.496l-543.04 543.04-316.8-316.8a64 64 0 0 1 0-90.496z"></path></svg>
                 </div>
                 <p class="card-category my-title">{{info.cname}}</p>
                 <div class="card-category myBetween">
                     <span class="score-cls">
-                        <i class="material-icons opacity-10 score-cls">
-                        hotel_class
-                        </i>{{info.score}}
+                        <svg class="svg-icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-ba633cb8=""><path fill="currentColor" d="M283.84 867.84 512 747.776l228.16 119.936a6.4 6.4 0 0 0 9.28-6.72l-43.52-254.08 184.512-179.904a6.4 6.4 0 0 0-3.52-10.88l-255.104-37.12L517.76 147.904a6.4 6.4 0 0 0-11.52 0L392.192 379.072l-255.104 37.12a6.4 6.4 0 0 0-3.52 10.88L318.08 606.976l-43.584 254.08a6.4 6.4 0 0 0 9.28 6.72z"></path></svg>
+                        {{info.score}}
                     </span>
                     <span>
                         已解决：<b>{{info.finishedNum}}</b>
@@ -85,6 +84,13 @@
 </script>
 
 <style scoped>
+    .svg-icon {
+        width: 2.4rem;
+        height: 2.4rem;
+        fill: currentColor;
+        color: black;
+        overflow: hidden;
+    }
     .card-header-yellow {
         box-shadow:0 0px 20px 0px rgba(0, 0, 0, 0.14), 0 7px 10px -5px rgba(200, 255, 41, 0.62);
     }

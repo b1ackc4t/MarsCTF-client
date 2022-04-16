@@ -47,3 +47,14 @@ export function removeType(type) {
         })
     })
 }
+
+export function searchTypePage(key, value, pageSize, pageNum) {
+    return requests({
+        url: `/api/admin/chaType/search/${pageSize}/${pageNum}`,
+        method: 'get',
+        params: {
+            key: key,
+            value: value
+        }
+    })
+}

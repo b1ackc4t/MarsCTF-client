@@ -42,11 +42,13 @@
                         this.wpInfo = res.data.data
                         this.wpInfo.wpTags = this.wpInfo.wpTags.split(sep)
                     }
+                    this.$emit("load0")
                 }).catch((error) => {
                     ElMessage({
                         message: error,
                         type: 'error',
                     })
+                    this.$emit("load0")
                 })
             },
             getWriteupByWidForMe() {
@@ -55,11 +57,13 @@
                         this.wpInfo = res.data.data
                         this.wpInfo.wpTags = this.wpInfo.wpTags.split(sep)
                     }
+                    this.$emit("load0")
                 }).catch((error) => {
                     ElMessage({
                         message: error,
                         type: 'error',
                     })
+                    this.$emit("load0")
                 })
             }
         },

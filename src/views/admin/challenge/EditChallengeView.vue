@@ -40,7 +40,7 @@
                         <el-upload
                                 class="upload-demo"
                                 drag
-                                action="http://mysite.com/api/admin/uploadCTFFile"
+                                :action="server + '/api/admin/uploadCTFFile'"
                                 :with-credentials="true"
                                 :limit="1"
                                 :on-remove="removeFileSubmit"
@@ -61,7 +61,51 @@
             </el-row>
             <el-row>
                 <el-col :span="24">
-                    <el-form-item label="FLAG" prop="flag">
+                    <el-form-item label="动态靶机">
+                        <el-switch
+                                v-model="currentChallenge.isDynamic"
+                                inline-prompt
+                                active-color="#13ce66"
+                                inactive-color="#ff4949"
+                                active-text="是"
+                                inactive-text="否"
+                        />
+                    </el-form-item>
+                    <div v-if="currentChallenge.isDynamic">
+                        <el-form-item label="docker镜像名" prop="dockerImage" >
+                            <el-input v-model="currentChallenge.imageName"></el-input>
+                        </el-form-item>
+                        <el-form-item label="docker端口" prop="dockerImage" >
+                            <el-input v-model="currentChallenge.srcPort"></el-input>
+                        </el-form-item>
+                        <el-form-item label="cpu数量上限" prop="cpuLimit">
+                            <el-input v-model="currentChallenge.cpuLimit"  oninput="value=value.replace(/[^0-9.]/g,'')"  placeholder="0.5" />
+                        </el-form-item>
+                        <el-form-item label="内存数量上限" prop="memLimit">
+                            <el-input v-model="currentChallenge.memLimit"  oninput="value=value.replace(/[^0-9.]/g,'')"  placeholder="128(单位 Mb)" />
+                        </el-form-item>
+                        <el-form-item label="动态FLAG">
+                            <el-switch
+                                    v-model="currentChallenge.isDynamicFlag"
+                                    inline-prompt
+                                    active-color="#13ce66"
+                                    inactive-color="#ff4949"
+                                    active-text="是"
+                                    inactive-text="否"
+                            />
+                        </el-form-item>
+                        <div v-if="currentChallenge.isDynamicFlag">
+                            <el-form-item label="FLAG前缀" prop="flagPrefix" >
+                                <el-input v-model="currentChallenge.flagPrefix"></el-input>
+                            </el-form-item>
+                        </div>
+                        <div v-else>
+                            <el-form-item label="FLAG" prop="flag">
+                                <el-input v-model="currentChallenge.flag"></el-input>
+                            </el-form-item>
+                        </div>
+                    </div>
+                    <el-form-item label="FLAG" prop="flag" v-else>
                         <el-input v-model="currentChallenge.flag"></el-input>
                     </el-form-item>
                 </el-col>
@@ -126,6 +170,8 @@
     import {getChaTagAndTypeForAdmin} from "@/api/chaTag";
     import {ElMessage} from "element-plus";
     import {download, removeFile} from "@/api/file";
+    import {getAllType} from "@/api/chaType";
+    import {server} from "@/api/config";
 
     export default {
         name: "EditChallengeView",
@@ -137,6 +183,7 @@
         },
         data() {
             return {
+                server,
                 fileList: [],
                 currentChallenge: {
                     cname: '',
@@ -153,32 +200,7 @@
                     multiple: true,
                     checkStrictly: true,
                 },
-                challengeTypes: [
-                    {
-                        label: 'Web',
-                        value: 1
-                    },
-                    {
-                        label: 'Pwn',
-                        value: 2
-                    },
-                    {
-                        label: 'Re',
-                        value: 3
-                    },
-                    {
-                        label: 'Crypto',
-                        value: 4
-                    },
-                    {
-                        label: 'Misc',
-                        value: 5
-                    },
-                    {
-                        label: 'Other',
-                        value: 6
-                    }
-                ],
+                challengeTypes: [],
                 rules: {
                     cname: [
                         {
@@ -367,6 +389,32 @@
                     fileList.splice(fileList.findIndex((item) => item === file), 1)
                 }
             },
+            getTypes() {
+                getAllType().then((res) => {
+                    if (res.status === 200 && res.data.flag === true) {
+                        let types = res.data.data
+                        for (let index in types) {
+                            this.challengeTypes.push({
+                                label: this.toFirstUpper(types[index].tname),
+                                value: types[index].tid
+                            })
+                        }
+                    } else {
+                        ElMessage({
+                            message: res.data.msg,
+                            type: 'warning',
+                        })
+                    }
+                }).catch((error) => {
+                    ElMessage({
+                        message: error,
+                        type: 'error',
+                    })
+                })
+            },
+            toFirstUpper(value) {
+                return value.slice(0, 1).toUpperCase() + value.slice(1)
+            },
             flushFile() {
                 this.currentChallenge.fid = null
                 this.currentChallenge.fname = null
@@ -376,6 +424,7 @@
             }
         },
         mounted() {
+            this.getTypes()
             this.setTagOptions()
             this.getChallengeInfo()
         }

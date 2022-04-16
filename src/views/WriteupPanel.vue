@@ -1,10 +1,10 @@
 <template>
-    <div class="pt-4">
+    <div class="pt-4" v-loading.fullscreen.lock="loading">
         <div class="searchArea mb-3">
 <!--            <el-row align="middle">-->
             <span>
                 <span>类型:</span>
-                <el-radio-group v-model="searchInfo.tname">
+                <el-radio-group v-model="currentType" @change="typeChange">
                     <el-radio-button label="all"></el-radio-button>
                     <el-radio-button v-for="type in types" :key="type.tid" :label="type.tname"></el-radio-button>
 
@@ -12,8 +12,8 @@
             </span>
 
             <span class="text-end">
-                <el-input class="w-60 searchInput" v-model="searchInfo.key"></el-input>
-                <el-button :icon="Search" type="danger" class="searchBtn"></el-button>
+                <el-input class="w-60 searchInput" v-model="searchText"></el-input>
+                <el-button :icon="Search" type="danger" class="searchBtn" @click="searchWriteupByPageForUser"></el-button>
             </span>
         </div>
         <SingleWP v-for="wp in wps" :key="wp.wid" :wp-info="wp"></SingleWP>
@@ -36,7 +36,7 @@
 
 <script>
     import SingleWP from "@/components/card/SingleWP";
-    import {getWriteupByPageForUser} from "@/api/writeup";
+    import {getWriteupByPageForUser, getWriteupByTypePageForUser, searchWriteupByPageForUser} from "@/api/writeup";
     import {ElMessage} from "element-plus";
     import {Search} from '@element-plus/icons-vue'
     import {getAllType} from "@/api/chaType";
@@ -46,23 +46,38 @@
         components: {
             SingleWP,
         },
+        props: {
+            type: String
+        },
         data() {
             return {
                 wps: [],
                 pageSize: 10,
                 total: 100,
                 currentPage: 1,
-                searchInfo: {
-                    tname: 'all',
-                    key: ''
-                },
+                currentType: 'all',
                 Search,
-                types: []
+                types: [],
+                searchText: '',
+                loads: [true, true],
+            }
+        },
+        computed: {
+            whereInfo() {
+                const {type} = this
+                return {type}
+            },
+            loading() {
+                let tmp = false
+                for (let index in this.loads) {
+                    tmp |= this.loads[index]
+                }
+                return tmp
             }
         },
         methods: {
-            getWriteupByPageForUser() {
-                getWriteupByPageForUser(this.pageSize, this.currentPage).then((res) => {
+            searchWriteupByPageForUser() {
+                searchWriteupByPageForUser(this.searchText, this.pageSize, this.currentPage).then((res) => {
                     if (res.status === 200 && res.data.flag === true) {
                         this.total = res.data.data.total
                         this.currentPage = res.data.data.pageNum
@@ -75,6 +90,38 @@
                     })
                 })
             },
+            getWriteupByPageForUser() {
+                getWriteupByPageForUser(this.pageSize, this.currentPage).then((res) => {
+                    if (res.status === 200 && res.data.flag === true) {
+                        this.total = res.data.data.total
+                        this.currentPage = res.data.data.pageNum
+                        this.wps = res.data.data.list
+                    }
+                    this.loads[1] = false
+                }).catch((error) => {
+                    ElMessage({
+                        message: error,
+                        type: 'error',
+                    })
+                    this.loads[1] = false
+                })
+            },
+            getWriteupByTypePageForUser() {
+                getWriteupByTypePageForUser(this.pageSize, this.currentPage, this.currentType).then((res) => {
+                    if (res.status === 200 && res.data.flag === true) {
+                        this.total = res.data.data.total
+                        this.currentPage = res.data.data.pageNum
+                        this.wps = res.data.data.list
+                    }
+                    this.loads[1] = false
+                }).catch((error) => {
+                    ElMessage({
+                        message: error,
+                        type: 'error',
+                    })
+                    this.loads[1] = false
+                })
+            },
             getTypes() {
                 getAllType().then((res) => {
                     if (res.status === 200 && res.data.flag === true) {
@@ -85,11 +132,13 @@
                             type: 'warning',
                         })
                     }
+                    this.loads[0] = false
                 }).catch((error) => {
                     ElMessage({
                         message: error,
                         type: 'error',
                     })
+                    this.loads[0] = false
                 })
             },
             handleCurrentChange(currentP) {
@@ -99,11 +148,33 @@
             handleSizeChange(currentS) {
                 this.pageSize = currentS
                 this.getWriteupByPageForUser()
+            },
+            startup() {
+                this.currentType = this.type
+                if (this.currentType === 'all' || this.currentType == null) {
+                    this.currentType = 'all'
+                    this.getWriteupByPageForUser()
+                } else {
+                    this.getWriteupByTypePageForUser()
+                }
+            },
+            typeChange(labelName) {
+                this.$router.push({
+                    name: 'writeupPanel',
+                    query: {
+                        type: labelName
+                    }
+                })
+            },
+        },
+        watch: {
+            whereInfo() {
+                this.startup()
             }
         },
         mounted() {
             this.getTypes()
-            this.getWriteupByPageForUser()
+            this.startup()
         }
     }
 </script>

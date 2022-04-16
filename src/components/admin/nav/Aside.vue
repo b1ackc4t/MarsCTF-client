@@ -49,6 +49,18 @@
                 <el-icon><notebook /></el-icon>
                 <span>学习管理</span>
             </el-menu-item>
+            <el-menu-item index="/admin/containerManager">
+                <el-icon><box /></el-icon>
+                <span>容器管理</span>
+            </el-menu-item>
+            <el-menu-item index="/admin/noticeManager">
+                <el-icon><notification /></el-icon>
+                <span>公告管理</span>
+            </el-menu-item>
+            <el-menu-item index="/admin/panelConfig">
+                <el-icon><setting /></el-icon>
+                <span>平台配置</span>
+            </el-menu-item>
 
         </el-menu>
         </el-scrollbar>
@@ -58,7 +70,7 @@
 
 <script>
     import hubuIcon from '@/assets/img/hubu.jpg'
-    import {Avatar, Chicken, CollectionTag, Document, CopyDocument, Notebook} from '@element-plus/icons-vue'
+    import {Avatar, Chicken, CollectionTag, Document, CopyDocument, Notebook, Box, Setting, Notification} from '@element-plus/icons-vue'
     export default {
         name: "Aside",
         data() {
@@ -73,7 +85,10 @@
             CollectionTag,
             Document,
             CopyDocument,
-            Notebook
+            Notebook,
+            Box,
+            Setting,
+            Notification
         },
         computed: {
             isCollapse() {

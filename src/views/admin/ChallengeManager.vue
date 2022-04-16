@@ -2,12 +2,7 @@
     <div>
         <el-row>
             <el-form :inline="true" class="demo-form-inline">
-                <el-form-item>
-                    <el-input placeholder="name"></el-input>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="onSubmit">Query</el-button>
-                </el-form-item>
+                <SearchItem :options="options" @searchHandle="searchChallengePage"></SearchItem>
                 <el-form-item>
                     <router-link to="/admin/challenge/add">
                         <el-button type="success" :icon="Plus" circle></el-button>
@@ -27,6 +22,14 @@
                         <el-tag
                                 :type="row.exposed?'success':'danger'"
                         >{{row.exposed}}
+                        </el-tag>
+                    </template>
+                </el-table-column>
+                <el-table-column label="提示">
+                    <template #default="{row}">
+                        <el-tag
+                                :type="getStatusStyle(row)"
+                        >{{getStatusText(row)}}
                         </el-tag>
                     </template>
                 </el-table-column>
@@ -69,11 +72,13 @@
 
 <script>
     import {Plus} from '@element-plus/icons-vue'
-    import {getAllChallengeByPageForAdmin, removeChallenge} from "@/api/challenge";
+    import {getAllChallengeByPageForAdmin, removeChallenge, searchChallengePage} from "@/api/challenge";
     import {ElMessage, ElMessageBox} from "element-plus";
+    import SearchItem from "@/components/smalltool/SearchItem";
 
     export default {
         name: "ChallengeManger",
+        components: {SearchItem},
         data() {
             return {
                 Plus,
@@ -81,10 +86,39 @@
                 total: 100,
                 currentPage: 1,
                 challengesData: [],
+                options: [
+                    {
+                        value: "cid",
+                        label: "ID",
+                    },
+                    {
+                        value: 'cname',
+                        label: '名称'
+                    },
+                    {
+                        value: 'tname',
+                        label: '类型'
+                    },
+                    {
+                        value: 'uname',
+                        label: '出题者'
+                    }
+                ]
 
             }
         },
         methods: {
+            searchChallengePage(key, value) {
+                searchChallengePage(key, value, this.pageSize, this.currentPage).then((res) => {
+                    if (res.status === 200 && res.data.flag === true) {
+                        this.total = res.data.data.total
+                        this.currentPage = res.data.data.pageNum
+                        this.challengesData = res.data.data.list
+                    }
+                }).catch((error) => {
+                    console.log(error)
+                })
+            },
             getChallengePage() {
                 getAllChallengeByPageForAdmin(this.pageSize, this.currentPage).then((res) => {
                     if (res.status === 200 && res.data.flag === true) {
@@ -103,7 +137,7 @@
             },
             removeChallengeSubmit(challenge) {
                 ElMessageBox.confirm(
-                    '确定要删除该题吗？（此操作还会删除此题目所有wp，请确保安全再操作）',
+                    '确定要删除该题吗？（此操作还会删除此题目所有wp以及learning中引用的该题目，请确保安全再操作）',
                     '危险',
                     {
                         confirmButtonText: 'OK',
@@ -141,6 +175,32 @@
             handleSizeChange(currentS) {
                 this.pageSize = currentS
                 this.getChallengePage()
+            },
+            getStatusStyle(row) {
+                if (row.isDynamic) {
+                    if (row.downloadOk === 1) {
+                        return "success"
+                    } else if (row.downloadOk === 0) {
+                        return "warning"
+                    } else {
+                        return "danger"
+                    }
+                } else {
+                    return "info"
+                }
+            },
+            getStatusText(row) {
+                if (row.isDynamic) {
+                    if (row.downloadOk === 1) {
+                        return "镜像已部署"
+                    } else if (row.downloadOk === 0) {
+                        return "镜像下载中"
+                    } else {
+                        return "镜像不存在"
+                    }
+                } else {
+                    return "无"
+                }
             }
         },
         mounted() {

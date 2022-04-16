@@ -62,3 +62,17 @@ export function uploadImageForLearn(fileObj) {
     })
 }
 
+export function uploadImageForNotice(fileObj) {
+    let form = new FormData()
+    form.append("file", fileObj)
+    form.append("nid", 99999999)
+    return requests({
+        url: '/api/admin/notice/uploadImage',
+        method: 'post',
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        },
+        data:form
+    })
+}
+

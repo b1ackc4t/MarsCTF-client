@@ -1,12 +1,7 @@
 <template>
     <el-row>
         <el-form :inline="true" class="demo-form-inline">
-            <el-form-item>
-                <el-input placeholder="name"></el-input>
-            </el-form-item>
-            <el-form-item>
-                <el-button type="primary" @click="onSubmit">Query</el-button>
-            </el-form-item>
+            <SearchItem :options="options" @searchHandle="searchUserPage"></SearchItem>
             <el-form-item>
                 <el-button type="success" :icon="Plus" circle @click="openSaveDialog"></el-button>
             </el-form-item>
@@ -123,12 +118,14 @@
 
 <script>
     import {Plus} from '@element-plus/icons-vue'
-    import {getAllUserByPage, saveUser, updateUser, removeUser} from "@/api/user"
+    import {getAllUserByPage, saveUser, updateUser, removeUser, searchUserPage} from "@/api/user"
     import { ElMessage, ElMessageBox } from 'element-plus'
+    import SearchItem from "@/components/smalltool/SearchItem";
 
     var sep = ' '
     export default {
         name: "UserManager",
+        components: {SearchItem},
         data() {
             return {
                 Plus,
@@ -163,10 +160,43 @@
                 dialogStatus: 'save',
                 pageSize: 10,
                 total: 100,
-                currentPage: 1
+                currentPage: 1,
+                options: [
+                    {
+                        value: 'uid',
+                        label: 'ID'
+                    },
+                    {
+                        value: 'uname',
+                        label: '用户名'
+                    },
+                    {
+                        value: 'skill',
+                        label: '技能'
+                    },
+                    {
+                        value: 'unit',
+                        label: '学校/单位'
+                    },
+                    {
+                        value: 'role',
+                        label: '角色'
+                    }
+                ]
             }
         },
         methods: {
+            searchUserPage(key, value) {
+                searchUserPage(key, value, this.pageSize, this.currentPage).then((res) => {
+                    if (res.status === 200 && res.data.flag === true) {
+                        this.total = res.data.data.total
+                        this.currentPage = res.data.data.pageNum
+                        this.usersData = res.data.data.list
+                    }
+                }).catch((error) => {
+                    console.log(error)
+                })
+            },
             openSaveDialog() {
                 this.flushNewUser()
                 this.rules = {

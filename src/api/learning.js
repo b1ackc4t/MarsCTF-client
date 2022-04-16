@@ -47,3 +47,55 @@ export function getLearningByLidForAdminEdit(lid) {
         method: 'get',
     })
 }
+
+export function getLearningByPageForUser(pageSize, pageNum) {
+    return requests({
+        url: `/api/user/learning/${pageSize}/${pageNum}`,
+        method: 'get',
+    })
+}
+
+export function getLearningByTypePageForUser(pageSize, pageNum, tname) {
+    return requests({
+        url: `/api/user/learning/${pageSize}/${pageNum}`,
+        method: 'get',
+        params: {
+            type: tname
+        }
+    })
+}
+
+export function getLearningByTagPageForUser(pageSize, pageNum, tgname) {
+    return requests({
+        url: `/api/user/learning/${pageSize}/${pageNum}`,
+        method: 'get',
+        params: {
+            tag: tgname
+        }
+    })
+}
+
+export function getLearningByLidForUser(lid) {
+    return requests({
+        url: `/api/user/learning/${lid}`,
+        method: 'get',
+    })
+}
+
+export function getChallengeByLidForUser(lid) {
+    return requests({
+        url: `/api/user/learning/getChallenge/${lid}`,
+        method: 'get',
+    })
+}
+
+export function searchLearnPage(key, value, pageSize, pageNum) {
+    return requests({
+        url: `/api/admin/learning/search/${pageSize}/${pageNum}`,
+        method: 'get',
+        params: {
+            key: key,
+            value: value
+        }
+    })
+}

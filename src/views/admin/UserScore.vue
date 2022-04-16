@@ -1,12 +1,7 @@
 <template>
     <el-row>
         <el-form :inline="true" class="demo-form-inline">
-            <el-form-item>
-                <el-input placeholder="name"></el-input>
-            </el-form-item>
-            <el-form-item>
-                <el-button type="primary" @click="onSubmit">Query</el-button>
-            </el-form-item>
+            <SearchItem :options="options" @searchHandle="searchUserScorePage"></SearchItem>
         </el-form>
 
     </el-row>
@@ -53,19 +48,42 @@
 </template>
 
 <script>
-    import {getScoreByPage} from "@/api/score";
+    import {getScoreByPage, searchUserScorePage} from "@/api/score";
+    import SearchItem from "@/components/smalltool/SearchItem";
 
     export default {
         name: "UserScore",
+        components: {SearchItem},
         data() {
             return {
                 pageSize: 10,
                 total: 100,
                 currentPage: 1,
                 userScoresData: [],
+                options: [
+                    {
+                        value: 'uid',
+                        label: 'ID'
+                    },
+                    {
+                        value: 'uname',
+                        label: '用户名'
+                    },
+                ]
             }
         },
         methods: {
+            searchUserScorePage(key, value) {
+                searchUserScorePage(key, value, this.pageSize, this.currentPage).then((res) => {
+                    if (res.status === 200 && res.data.flag === true) {
+                        this.total = res.data.data.total
+                        this.currentPage = res.data.data.pageNum
+                        this.userScoresData = res.data.data.list
+                    }
+                }).catch((error) => {
+                    console.log(error)
+                })
+            },
             getScoreInfo() {
                 getScoreByPage(this.pageSize, this.currentPage).then((res) => {
                     if (res.status === 200 && res.data.flag === true) {

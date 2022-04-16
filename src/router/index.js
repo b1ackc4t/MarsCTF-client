@@ -1,7 +1,7 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
-    history: createWebHashHistory(), // hash模式：createWebHashHistory，history模式：createWebHistory
+    history: createWebHistory(), // hash模式：createWebHashHistory，history模式：createWebHistory
     routes: [
         {
             path: '/',
@@ -50,8 +50,22 @@ const router = createRouter({
                 {
                     path: '/profile/:uid',
                     name: 'profile',
+                    redirect: {name: 'otherChallengeHistory'},
                     component: () => import('../views/Profile'),
-                    props: true
+                    props: true,
+                    children: [
+
+                        {
+                            path: 'challengeHistory',
+                            name: 'otherChallengeHistory',
+                            component: () => import('../views/myProfile/ChallengeHistory'),
+                        },
+                        {
+                            path: 'writeupPanel',
+                            name: 'otherWriteupPanel',
+                            component: () => import('../views/profile/WriteupPanel'),
+                        },
+                    ]
                 },
                 {
                     path: '/editUserInfo',
@@ -74,7 +88,9 @@ const router = createRouter({
                     path: '/writeupPanel',
                     name: 'writeupPanel',
                     component: () => import('../views/WriteupPanel'),
-                    props: true
+                    props: route => ({
+                        type: route.query.type,
+                    })
                 },
                 {
                     path: '/learnPanel',
@@ -82,6 +98,7 @@ const router = createRouter({
                     component: () => import('../views/LearnPanel'),
                     props: route => ({
                         type: route.query.type,
+                        tag: route.query.tag,
                     })
                 },
                 {
@@ -108,11 +125,34 @@ const router = createRouter({
                     component: () => import('../views/UpdataWP'),
                     props: true
                 },
+                {
+                    path: '/viewLearn/:lid',
+                    name: 'viewLearn',
+                    component: () => import('../views/ViewLearn'),
+                    props: true
+                },
+                {
+                    path: '/notice',
+                    name: 'notice',
+                    component: () => import('../views/Notice'),
+                },
+                {
+                    path: '/viewNotice/:nid',
+                    name: 'viewNotice',
+                    component: () => import('../views/ViewNotice'),
+                    props: true
+                },
+                {
+                    path: '/viewRank',
+                    name: 'viewRank',
+                    component: () => import('../views/ViewRank'),
+                },
             ]
         },
         {
             path: '/admin',
             name: 'admin',
+            redirect: '/admin/userManager',
             component: () => import('../views/admin/Index'),
             children: [
                 {
@@ -184,6 +224,32 @@ const router = createRouter({
                     path: '/admin/learning/edit/:lid',
                     name: 'editLearningView',
                     component: () => import('../views/admin/learn/EditLearningView'),
+                    props: true
+                },
+                {
+                    path: '/admin/containerManager',
+                    name: 'containerManager',
+                    component: () => import('../views/admin/ContainerManager')
+                },
+                {
+                    path: '/admin/panelConfig',
+                    name: 'panelConfig',
+                    component: () => import('../views/admin/PanelConfig')
+                },
+                {
+                    path: '/admin/noticeManager',
+                    name: 'noticeManager',
+                    component: () => import('../views/admin/NoticeManager')
+                },
+                {
+                    path: '/admin/notice/add',
+                    name: 'addNotice',
+                    component: () => import('../views/admin/notice/AddNotice')
+                },
+                {
+                    path: '/admin/notice/edit/:id',
+                    name: 'editNotice',
+                    component: () => import('../views/admin/notice/EditNotice'),
                     props: true
                 },
             ]

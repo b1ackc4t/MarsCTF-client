@@ -1,4 +1,4 @@
-<template>
+`<template>
     <div class="pt-4">
         <BodyCard>
             <el-form ref="formRef" :model="wpInfo" label-width="100px">

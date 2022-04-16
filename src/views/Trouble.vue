@@ -1,20 +1,21 @@
 <template>
-    <div class="row pt-4 gx-5">
+    <div class="row pt-4 gx-5" v-loading.fullscreen.lock="loading">
         <div class="col-7">
             <div class="row mb-5">
-                <MainInfo :cid="cid">
+                <MainInfo :cid="cid" @load0="() => {loads[0] = false}" @load1="() => {loads[1] = false}">
                 </MainInfo>
             </div>
             <div class="row mb-5">
-                <Comment></Comment>
+                <Comment :cid="cid" :get-func="getCommentByPage" :save-func="saveComment" :remove-func="removeComment"
+                @load2="() => {loads[2] = false}" @load3="() => {loads[3] = false}"></Comment>
             </div>
         </div>
         <div class="col-5">
             <div class="row mb-5">
-                <WPPart :cid="cid"></WPPart>
+                <WPPart :cid="cid" @load4="() => {loads[4] = false}"></WPPart>
             </div>
             <div class="row mb-5">
-                <Ranking :cid="cid"></Ranking>
+                <Ranking :cid="cid" @load5="() => {loads[5] = false}"></Ranking>
             </div>
         </div>
     </div>
@@ -25,12 +26,30 @@
     import WPPart from "@/components/trouble/WPPart";
     import Ranking from "@/components/trouble/Ranking";
     import Comment from "@/components/trouble/Comment";
+    import {getCommentByPage, saveComment, removeComment} from "@/api/chaComment";
     export default {
         name: "Trouble",
         components: {Comment, Ranking, WPPart, MainInfo},
         props: {
             cid: Number
-        }
+        },
+        data() {
+            return {
+                getCommentByPage,
+                saveComment,
+                removeComment,
+                loads: [true, true, true, true, true],
+            }
+        },
+        computed: {
+            loading() {
+                let tmp = false
+                for (let index in this.loads) {
+                    tmp |= this.loads[index]
+                }
+                return tmp
+            }
+        },
     }
 </script>
 

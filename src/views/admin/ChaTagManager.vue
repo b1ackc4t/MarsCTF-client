@@ -1,12 +1,7 @@
 <template>
     <el-row>
         <el-form :inline="true" class="demo-form-inline">
-            <el-form-item>
-                <el-input placeholder="name"></el-input>
-            </el-form-item>
-            <el-form-item>
-                <el-button type="primary" @click="onSubmit">Query</el-button>
-            </el-form-item>
+            <SearchItem :options="options" @searchHandle="searchTagPage"></SearchItem>
             <el-form-item>
                 <el-button type="success" :icon="Plus" circle @click="openSaveDialog"></el-button>
             </el-form-item>
@@ -57,6 +52,7 @@
             <el-table-column prop="tgname" label="名称" />
             <el-table-column prop="tname" label="类型" />
             <el-table-column prop="chaNum" label="题目总数" />
+            <el-table-column prop="learnNum" label="课程总数" />
             <el-table-column
                     label="操作"
                     align="center"
@@ -97,11 +93,13 @@
 <script>
     import {Plus} from '@element-plus/icons-vue'
     import {ElMessage, ElMessageBox} from "element-plus";
-    import {getAllChaTagByPageForAdmin, saveChaTag, updateChaTag, removeChaTag} from "@/api/chaTag";
+    import {getAllChaTagByPageForAdmin, saveChaTag, updateChaTag, removeChaTag, searchTagPage} from "@/api/chaTag";
     import {getAllType} from "@/api/chaType";
+    import SearchItem from "@/components/smalltool/SearchItem";
 
     export default {
         name: "ChaTagManager",
+        components: {SearchItem},
         data() {
             return {
                 Plus,
@@ -134,10 +132,38 @@
                             trigger: 'blur',
                         },
                     ]
-                }
+                },
+                options: [
+                    {
+                        value: 'tgid',
+                        label: 'ID'
+                    },
+                    {
+                        value: 'tgname',
+                        label: '名称'
+                    },
+                    {
+                        value: 'tname',
+                        label: '类型'
+                    },
+                ]
             }
         },
         methods: {
+            searchTagPage(key, value) {
+                searchTagPage(key, value, this.pageSize, this.currentPage).then((res) => {
+                    if (res.status === 200 && res.data.flag === true) {
+                        this.total = res.data.data.total
+                        this.currentPage = res.data.data.pageNum
+                        this.tagsData = res.data.data.list
+                    }
+                }).catch((error) => {
+                    ElMessage({
+                        message: error,
+                        type: 'error',
+                    })
+                })
+            },
             openSaveDialog() {
                 this.flushTag()
                 this.dialogStatus = 'save'

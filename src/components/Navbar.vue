@@ -11,40 +11,87 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
-
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <router-link to="/"><a class="nav-link d-flex align-items-center justify-content-center fs-6 active" aria-current="page" href="#"><i class="material-icons opacity-10">dashboard</i>首页</a></router-link>
+                            <router-link to="/"><a class="nav-link d-flex align-items-center justify-content-center fs-6 active" aria-current="page" href="#">
+                                <svg class="svg-icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-ba633cb8=""><path fill="currentColor" d="M160 448a32 32 0 0 1-32-32V160.064a32 32 0 0 1 32-32h256a32 32 0 0 1 32 32V416a32 32 0 0 1-32 32H160zm448 0a32 32 0 0 1-32-32V160.064a32 32 0 0 1 32-32h255.936a32 32 0 0 1 32 32V416a32 32 0 0 1-32 32H608zM160 896a32 32 0 0 1-32-32V608a32 32 0 0 1 32-32h256a32 32 0 0 1 32 32v256a32 32 0 0 1-32 32H160zm448 0a32 32 0 0 1-32-32V608a32 32 0 0 1 32-32h255.936a32 32 0 0 1 32 32v256a32 32 0 0 1-32 32H608z"></path></svg>
+                                首页
+                            </a>
+                            </router-link>
                         </li>
                         <li class="nav-item">
-                            <router-link to="/challenge"><a class="nav-link d-flex align-items-center justify-content-center fs-6" href="#"><i class="material-icons opacity-10">fitness_center</i>挑战</a></router-link>
+                            <span @click="gotoChallenge">
+                                <a class="nav-link d-flex align-items-center justify-content-center fs-6" href="javascript:;">
+                                    <svg class="svg-icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-ba633cb8=""><path fill="currentColor" d="M288 128h608L736 384l160 256H288v320h-96V64h96v64z"></path></svg>
+                                    挑战
+                                </a>
+                            </span>
                         </li>
                         <li class="nav-item">
-                            <router-link to="/writeupPanel"><a class="nav-link d-flex align-items-center justify-content-center fs-6" href="#"><i class="material-icons opacity-10">note_alt</i>Writeup</a></router-link>
+                            <span @click="gotoWriteup">
+                                 <a class="nav-link d-flex align-items-center justify-content-center fs-6" href="javascript:;">
+                                     <svg class="svg-icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-ba633cb8=""><path fill="currentColor" d="M704 192h160v736H160V192h160v64h384v-64zM288 512h448v-64H288v64zm0 256h448v-64H288v64zm96-576V96h256v96H384z"></path></svg>
+                                     Writeup
+                                 </a>
+                            </span>
                         </li>
                         <li class="nav-item">
-                            <router-link to="/learnPanel"><a class="nav-link d-flex align-items-center justify-content-center fs-6" href="#"><i class="material-icons opacity-10">book</i>学习</a></router-link>
+                            <span @click="gotoLearn">
+                                 <a class="nav-link d-flex align-items-center justify-content-center fs-6" href="javascript:;">
+                                     <svg class="svg-icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-ba633cb8=""><path fill="currentColor" d="M576 128v288l96-96 96 96V128h128v768H320V128h256zm-448 0h128v768H128V128z"></path></svg>
+                                     学习
+                                 </a>
+                            </span>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link d-flex align-items-center justify-content-center fs-6" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                            <span @click="gotoNotice">
+                                 <a class="nav-link d-flex align-items-center justify-content-center fs-6" href="javascript:;">
+                                     <svg class="svg-icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-ba633cb8=""><path fill="currentColor" d="M640 832a128 128 0 0 1-256 0h256zm192-64H134.4a38.4 38.4 0 0 1 0-76.8H192V448c0-154.88 110.08-284.16 256.32-313.6a64 64 0 1 1 127.36 0A320.128 320.128 0 0 1 832 448v243.2h57.6a38.4 38.4 0 0 1 0 76.8H832z"></path></svg>
+                                     公告
+                                 </a>
+                            </span>
+                        </li>
+                        <li class="nav-item">
+                            <span @click="gotoRank">
+                                <a class="nav-link d-flex align-items-center justify-content-center fs-6" href="javascript:;">
+                                    <svg class="svg-icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-ba633cb8=""><path fill="currentColor" d="M416 896V128h192v768H416zm-288 0V448h192v448H128zm576 0V320h192v576H704z"></path></svg>
+                                    排行榜
+                                </a>
+                            </span>
+
                         </li>
                     </ul>
 
                     <ul class="navbar-nav ml-md-auto d-block d-sm-flex d-md-flex">
                         <li class="nav-item" v-if="!checkUser">
-                            <a class="nav-link d-flex align-items-center justify-content-center fs-6" href="#" data-bs-toggle="modal" data-bs-target="#modal-form"><i class="material-icons opacity-10">login</i>登录</a>
+                            <a class="nav-link d-flex align-items-center justify-content-center fs-6" href="#" data-bs-toggle="modal" data-bs-target="#modal-form">
+                                <svg class="svg-icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-ba633cb8=""><path fill="currentColor" d="M754.752 480H160a32 32 0 1 0 0 64h594.752L521.344 777.344a32 32 0 0 0 45.312 45.312l288-288a32 32 0 0 0 0-45.312l-288-288a32 32 0 1 0-45.312 45.312L754.752 480z"></path></svg>
+                                登录
+                            </a>
                         </li>
                         <li class="nav-item" v-if="!checkUser">
-                            <a class="nav-link d-flex align-items-center justify-content-center fs-6" href="#" tabindex="-1" aria-disabled="true" data-bs-toggle="modal" data-bs-target="#exampleModalSignUp"><i class="material-icons opacity-10">assignment</i>注册</a>
+                            <a class="nav-link d-flex align-items-center justify-content-center fs-6" href="#" tabindex="-1" aria-disabled="true" data-bs-toggle="modal" data-bs-target="#exampleModalSignUp">
+                                <svg class="svg-icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-ba633cb8=""><path fill="currentColor" d="M352 480h320a32 32 0 1 1 0 64H352a32 32 0 0 1 0-64z"></path><path fill="currentColor" d="M480 672V352a32 32 0 1 1 64 0v320a32 32 0 0 1-64 0z"></path><path fill="currentColor" d="M512 896a384 384 0 1 0 0-768 384 384 0 0 0 0 768zm0 64a448 448 0 1 1 0-896 448 448 0 0 1 0 896z"></path></svg>
+                                注册
+                            </a>
                         </li>
                         <li class="nav-item" v-if="checkAdmin">
-                            <router-link to="/admin"><a class="nav-link d-flex align-items-center justify-content-center fs-6" aria-current="page" href="#"><i class="material-icons opacity-10">settings</i>管理平台</a></router-link>
+                            <router-link to="/admin"><a class="nav-link d-flex align-items-center justify-content-center fs-6" aria-current="page" href="#">
+                                <svg class="svg-icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-ba633cb8=""><path fill="currentColor" d="M764.416 254.72a351.68 351.68 0 0 1 86.336 149.184H960v192.064H850.752a351.68 351.68 0 0 1-86.336 149.312l54.72 94.72-166.272 96-54.592-94.72a352.64 352.64 0 0 1-172.48 0L371.136 936l-166.272-96 54.72-94.72a351.68 351.68 0 0 1-86.336-149.312H64v-192h109.248a351.68 351.68 0 0 1 86.336-149.312L204.8 160l166.208-96h.192l54.656 94.592a352.64 352.64 0 0 1 172.48 0L652.8 64h.128L819.2 160l-54.72 94.72zM704 499.968a192 192 0 1 0-384 0 192 192 0 0 0 384 0z"></path></svg>
+                                管理平台
+                            </a></router-link>
                         </li>
                         <li class="nav-item" v-if="checkUser">
-                            <router-link to="/myProfile"><a class="nav-link d-flex align-items-center justify-content-center fs-6" aria-current="page" href="#"><i class="material-icons opacity-10">person</i>{{username}}</a></router-link>
+                            <router-link to="/myProfile"><a class="nav-link d-flex align-items-center justify-content-center fs-6" aria-current="page" href="#">
+                                <svg class="svg-icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-ba633cb8=""><path fill="currentColor" d="M288 320a224 224 0 1 0 448 0 224 224 0 1 0-448 0zm544 608H160a32 32 0 0 1-32-32v-96a160 160 0 0 1 160-160h448a160 160 0 0 1 160 160v96a32 32 0 0 1-32 32z"></path></svg>
+                                {{username}}
+                            </a></router-link>
                         </li>
                         <li class="nav-item" v-if="checkUser">
-                            <a class="nav-link d-flex align-items-center justify-content-center fs-6" href="#" @click="logout"><i class="material-icons opacity-10">logout</i>退出</a>
+                            <a class="nav-link d-flex align-items-center justify-content-center fs-6" href="#" @click="logout">
+                                <svg class="svg-icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-ba633cb8=""><path fill="currentColor" d="M512 64a448 448 0 1 1 0 896 448 448 0 0 1 0-896zm0 393.664L407.936 353.6a38.4 38.4 0 1 0-54.336 54.336L457.664 512 353.6 616.064a38.4 38.4 0 1 0 54.336 54.336L512 566.336 616.064 670.4a38.4 38.4 0 1 0 54.336-54.336L566.336 512 670.4 407.936a38.4 38.4 0 1 0-54.336-54.336L512 457.664z"></path></svg>
+                                退出
+                            </a>
                         </li>
                     </ul>
 
@@ -73,8 +120,8 @@
                                         <input type="password" v-model="password" class="form-control" autocomplete="new-password">
                                     </div>
                                     <div class="form-check form-switch d-flex align-items-center">
-                                        <input class="form-check-input" type="checkbox" id="rememberMe" checked="">
-                                        <label class="form-check-label mb-0 ms-3" for="rememberMe">记住账号</label>
+                                        <input class="form-check-input" type="checkbox" id="rememberMe" name="remember-me" checked="" v-model="remember">
+                                        <label class="form-check-label mb-0 ms-3" for="rememberMe" name="remember-me">记住账号</label>
                                     </div>
                                     <div class="text-center">
                                         <button type="button" class="btn btn-round bg-gradient-info btn-lg w-100 mt-4 mb-0" @click="login">登录</button>
@@ -163,15 +210,70 @@
                 checkError2: false,
                 checkUser: false,
                 checkAdmin: false,
-                msg: ""
+                msg: "",
+                remember: true
             }
         },
         props: {
             user: Object
         },
         methods: {
+            gotoChallenge() {
+                if (this.user != null) {
+                    this.$router.push('/challenge')
+                } else {
+                    ElMessage({
+                        message: "请先登录",
+                        type: 'warning',
+                    })
+                }
+            },
+            gotoWriteup() {
+                if (this.user != null) {
+                    this.$router.push('/writeupPanel')
+                } else {
+                    ElMessage({
+                        message: "请先登录",
+                        type: 'warning',
+                    })
+                }
+
+            },
+            gotoLearn() {
+                if (this.user != null) {
+                    this.$router.push('/learnPanel')
+                } else {
+                    ElMessage({
+                        message: "请先登录",
+                        type: 'warning',
+                    })
+                }
+
+            },
+            gotoNotice() {
+                if (this.user != null) {
+                    this.$router.push('/notice')
+                } else {
+                    ElMessage({
+                        message: "请先登录",
+                        type: 'warning',
+                    })
+                }
+
+            },
+            gotoRank() {
+                if (this.user != null) {
+                    this.$router.push('/viewRank')
+                } else {
+                    ElMessage({
+                        message: "请先登录",
+                        type: 'warning',
+                    })
+                }
+
+            },
             login() {
-                login(this.username, this.password).then((res) => {
+                login(this.username, this.password, this.remember).then((res) => {
                     if (res.data.flag === false) {
                         this.checkError1 = true
                     } else {
@@ -182,8 +284,6 @@
                         })
                         this.$router.go(0)
                     }
-
-                        
                 }).catch((error) => {
                     console.log(error)
                 })
@@ -199,6 +299,10 @@
                         this.checkError2 = true
                     } else {
                         this.checkError2 = false
+                        ElMessage({
+                            message: "注册成功",
+                            type: 'success',
+                        })
                         login(this.newUsername, this.newPassword).then(() => {
                             this.$router.go(0)
                         }).catch((error) => {
@@ -209,7 +313,7 @@
             },
             logout() {
                 logout().then(() => {
-                    this.$router.go(0)
+                    window.location.href="/"
                 }).catch((error) => {
                     console.log(error)
                 })
@@ -237,5 +341,12 @@
 <style scoped>
     div >>> .navbar-toggler .navbar-toggler-icon {
         background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23344767' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+    .svg-icon {
+        width: 1.6em;
+        height: 1.6em;
+        vertical-align: -0.15em;
+        fill: currentColor;
+        overflow: hidden;
     }
 </style>

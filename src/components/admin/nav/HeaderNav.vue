@@ -3,7 +3,7 @@
 
         <el-space :size="size" spacer="|">
             <el-button type="primary" :icon="saIcon" circle @click="switchAside"></el-button>
-            <el-page-header content="detail" @back="goBack" />
+            <el-page-header content="" @back="goBack" />
         </el-space>
 
         <div class="right-info">
@@ -15,11 +15,7 @@
                 </el-button>
                 <template #dropdown>
                     <el-dropdown-menu>
-                        <el-dropdown-item>Action 1</el-dropdown-item>
-                        <el-dropdown-item>Action 2</el-dropdown-item>
-                        <el-dropdown-item>Action 3</el-dropdown-item>
-                        <el-dropdown-item>Action 4</el-dropdown-item>
-                        <el-dropdown-item>Action 5</el-dropdown-item>
+                        <el-dropdown-item @click="logout">退出登录</el-dropdown-item>
                     </el-dropdown-menu>
                 </template>
             </el-dropdown>
@@ -34,6 +30,7 @@
 <script>
     import { ArrowLeftBold, ArrowRightBold, Avatar } from '@element-plus/icons-vue'
     import { ArrowDown } from '@element-plus/icons-vue'
+    import {logout} from "@/api/user";
 
     export default {
         name: "HeaderNav",
@@ -62,7 +59,14 @@
             },
             goBack() {
                 this.$router.go(-1)
-            }
+            },
+            logout() {
+                logout().then(() => {
+                    this.$router.go(0)
+                }).catch((error) => {
+                    console.log(error)
+                })
+            },
         },
         watch: {
 

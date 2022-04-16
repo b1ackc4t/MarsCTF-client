@@ -1,12 +1,7 @@
 <template>
     <el-row>
         <el-form :inline="true" class="demo-form-inline">
-            <el-form-item>
-                <el-input placeholder="name"></el-input>
-            </el-form-item>
-            <el-form-item>
-                <el-button type="primary" @click="onSubmit">Query</el-button>
-            </el-form-item>
+            <SearchItem :options="options" @searchHandle="searchTypePage"></SearchItem>
             <el-form-item>
                 <el-button type="success" :icon="Plus" circle @click="openSaveDialog"></el-button>
             </el-form-item>
@@ -45,6 +40,7 @@
             <el-table-column prop="tid" label="ID" sortable/>
             <el-table-column prop="tname" label="名称" />
             <el-table-column prop="chaNum" label="题目总数" />
+            <el-table-column prop="learnNum" label="课程总数" />
             <el-table-column
                     label="操作"
                     align="center"
@@ -85,10 +81,12 @@
 <script>
     import {Plus} from '@element-plus/icons-vue'
     import {ElMessage, ElMessageBox} from "element-plus";
-    import {getAllTypeByPageForAdmin, saveType, updateType, removeType} from "@/api/chaType";
+    import {getAllTypeByPageForAdmin, saveType, updateType, removeType, searchTypePage} from "@/api/chaType";
+    import SearchItem from "@/components/smalltool/SearchItem";
 
     export default {
         name: "ChaTypeManager",
+        components: {SearchItem},
         data() {
             return {
                 Plus,
@@ -120,10 +118,34 @@
                             trigger: 'blur',
                         },
                     ]
-                }
+                },
+                options: [
+                    {
+                        value: 'tid',
+                        label: 'ID'
+                    },
+                    {
+                        value: 'tname',
+                        label: '类型'
+                    },
+                ]
             }
         },
         methods: {
+            searchTypePage(key, value) {
+                searchTypePage(key, value, this.pageSize, this.currentPage).then((res) => {
+                    if (res.status === 200 && res.data.flag === true) {
+                        this.total = res.data.data.total
+                        this.currentPage = res.data.data.pageNum
+                        this.typesData = res.data.data.list
+                    }
+                }).catch((error) => {
+                    ElMessage({
+                        message: error,
+                        type: 'error',
+                    })
+                })
+            },
             openSaveDialog() {
                 this.flushType()
                 this.dialogStatus = 'save'

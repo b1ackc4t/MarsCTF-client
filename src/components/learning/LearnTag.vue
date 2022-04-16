@@ -2,7 +2,7 @@
     <BodyCard>
         <el-row align="middle">
             <el-col :span="20">
-                <el-select v-model="currentTag" class="m-2 tag-select" placeholder="Select" size="large" style="width: 100%">
+                <el-select v-model="value" class="m-2 tag-select" placeholder="Select" size="large" style="width: 100%">
                     <el-option
                             v-for="item in options"
                             :key="item.value"
@@ -22,13 +22,32 @@
 
 <script>
     import BodyCard from "@/components/card/BodyCard";
+
     export default {
         name: "LearnTag",
         components: {BodyCard},
+        props: {
+            modelValue: String,
+            options: []
+        },
+        computed: {
+            value: {
+                get() {
+                    return this.modelValue
+                },
+                set(value) {
+                    this.$emit('update:modelValue', value)
+                }
+            }
+        },
         data() {
             return {
-                currentTag: '',
                 formInline: {}
+            }
+        },
+        methods: {
+            onSubmit() {
+                this.$emit('onSubmit')
             }
         }
     }

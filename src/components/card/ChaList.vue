@@ -1,5 +1,5 @@
 <template>
-    <div class="row align-items-end">
+    <div class="row align-items-end" v-loading.fullscreen.lock="loading">
         <div class="col-md-10">
             <div class="input-group input-group-static mb-4">
                 <label for="exampleFormControlSelect1" class="ms-0">类型选择</label>
@@ -58,13 +58,21 @@
                 total: 100,
                 currentPage: 1,
                 tags: [],
-                selectedTag: '--所有标签--'
+                selectedTag: '--所有标签--',
+                loads: [true, true],
             }
         },
         computed: {
             whereInfo() {
                 const {currentType, currentTag} = this
                 return {currentType, currentTag}
+            },
+            loading() {
+                let tmp = false
+                for (let index in this.loads) {
+                    tmp |= this.loads[index]
+                }
+                return tmp
             }
         },
         methods: {
@@ -76,11 +84,13 @@
                             this.currentPage = res.data.data.pageNum
                             this.cinfos = res.data.data.list
                         }
+                        this.loads[1] = false
                     }).catch((error) => {
                         ElMessage({
                             message: error,
                             type: 'error',
                         })
+                        this.loads[1] = false
                     })
                 } else {
                     getChallengeByType(this.pageSize, this.currentPage, this.currentType).then((res) => {
@@ -89,11 +99,13 @@
                             this.currentPage = res.data.data.pageNum
                             this.cinfos = res.data.data.list
                         }
+                        this.loads[1] = false
                     }).catch((error) => {
                         ElMessage({
                             message: error,
                             type: 'error',
                         })
+                        this.loads[1] = false
                     })
                 }
 
@@ -117,11 +129,13 @@
                                 type: 'warning',
                             })
                         }
+                        this.loads[0] = false
                     }).catch((error) => {
                         ElMessage({
                             message: error,
                             type: 'error',
                         })
+                        this.loads[0] = false
                     })
                 } else {
                     getChaTags().then((res) => {
@@ -134,11 +148,13 @@
 
                             })
                         }
+                        this.loads[0] = false
                     }).catch((error) => {
                         ElMessage({
                             message: error,
                             type: 'error',
                         })
+                        this.loads[0] = false
                     })
                 }
 
@@ -150,11 +166,13 @@
                         this.currentPage = res.data.data.pageNum
                         this.cinfos = res.data.data.list
                     }
+                    this.loads[1] = false
                 }).catch((error) => {
                     ElMessage({
                         message: error,
                         type: 'error',
                     })
+                    this.loads[1] = false
                 })
             },
             submitSearch() {

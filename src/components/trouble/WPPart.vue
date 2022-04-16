@@ -87,11 +87,13 @@
                             type: 'warning',
                         })
                     }
+                    this.$emit("load4")
                 }).catch((error) => {
                     ElMessage({
                         message: error,
                         type: 'error',
                     })
+                    this.$emit("load4")
                 })
             }
         },

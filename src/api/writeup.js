@@ -19,6 +19,16 @@ export function getWriteupByPageForUser(pageSize, pageNum) {
     })
 }
 
+export function getWriteupByTypePageForUser(pageSize, pageNum, tname) {
+    return requests({
+        url: `/api/user/writeup/${pageSize}/${pageNum}`,
+        method: 'get',
+        params: {
+            type: tname
+        }
+    })
+}
+
 export function getWriteupByWidForUser(wid) {
     return requests({
         url: `/api/user/writeup/${wid}`,
@@ -138,5 +148,44 @@ export function updateWriteup(writeup) {
         url: '/api/user/writeup',
         method: 'post',
         data: form
+    })
+}
+
+export function getWriteupByPageForUid(uid, pageSize, pageNum) {
+    return requests({
+        url: `/api/user/writeup/${uid}/${pageSize}/${pageNum}`,
+        method: 'get'
+    })
+}
+
+export function searchWriteupByPageForUser(value, pageSize, pageNum) {
+    return requests({
+        url: `/api/user/writeup/search/${pageSize}/${pageNum}`,
+        method: 'get',
+        params: {
+            value: value
+        }
+    })
+}
+
+export function searchWriteupPage(key, value, pageSize, pageNum) {
+    return requests({
+        url: `/api/admin/writeup/search/${pageSize}/${pageNum}`,
+        method: 'get',
+        params: {
+            key: key,
+            value: value
+        }
+    })
+}
+
+export function searchUncheckWriteupPage(key, value, pageSize, pageNum) {
+    return requests({
+        url: `/api/admin/writeup/uncheck/search/${pageSize}/${pageNum}`,
+        method: 'get',
+        params: {
+            key: key,
+            value: value
+        }
     })
 }

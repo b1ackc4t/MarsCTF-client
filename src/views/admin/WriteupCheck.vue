@@ -1,12 +1,7 @@
 <template>
     <el-row>
         <el-form :inline="true" class="demo-form-inline">
-            <el-form-item>
-                <el-input placeholder="name"></el-input>
-            </el-form-item>
-            <el-form-item>
-                <el-button type="primary" @click="onSubmit">Query</el-button>
-            </el-form-item>
+            <SearchItem :options="options" @searchHandle="searchUncheckWriteupPage"></SearchItem>
         </el-form>
     </el-row>
 
@@ -91,11 +86,13 @@
 </template>
 
 <script>
-    import {getUnCheckWriteupByPageForAdmin, passWriteup, rejectWriteup} from "@/api/writeup";
+    import {getUnCheckWriteupByPageForAdmin, passWriteup, rejectWriteup, searchUncheckWriteupPage} from "@/api/writeup";
     import {ElMessage} from "element-plus";
+    import SearchItem from "@/components/smalltool/SearchItem";
 
     export default {
         name: "WriteupCheck",
+        components: {SearchItem},
         data() {
             return {
                 pageSize: 10,
@@ -131,9 +128,41 @@
                     reject: '驳回'
                 },
                 dialogStatus: 'pass',
+                options: [
+                    {
+                        value: 'wid',
+                        label: 'ID'
+                    },
+                    {
+                        value: 'uname',
+                        label: '作者'
+                    },
+                    {
+                        value: 'title',
+                        label: '标题'
+                    },
+                    {
+                        value: 'creTime',
+                        label: '发表时间'
+                    },
+                ]
             }
         },
         methods: {
+            searchUncheckWriteupPage(key, value) {
+                searchUncheckWriteupPage(key, value, this.pageSize, this.currentPage).then((res) => {
+                    if (res.status === 200 && res.data.flag === true) {
+                        this.total = res.data.data.total
+                        this.currentPage = res.data.data.pageNum
+                        this.wps = res.data.data.list
+                    }
+                }).catch((error) => {
+                    ElMessage({
+                        message: error,
+                        type: 'error',
+                    })
+                })
+            },
             viewWP(wpInfo) {
                 this.$router.push({
                     name: 'writeupView',

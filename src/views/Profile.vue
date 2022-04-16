@@ -1,16 +1,17 @@
 <template>
-    <div>
+    <div v-loading.fullscreen.lock="loading">
         <div class="row gx-4 mb-4 pt-4">
             <UserInfo :user="user"></UserInfo>
         </div>
         <div class="row mb-4">
             <OtherTotalPanel :uid="uid"></OtherTotalPanel>
         </div>
+
     </div>
 </template>
 
 <script>
-    import {getUserByWidForUser} from "@/api/user";
+    import {getUserByUidForUser} from "@/api/user";
     import UserInfo from "@/components/profile/UserInfo";
     import OtherTotalPanel from "@/components/profile/OtherTotalPanel";
 
@@ -22,18 +23,29 @@
         },
         data() {
             return {
-                user: null
+                user: null,
+                loads: [true],
+            }
+        },
+        computed: {
+            loading() {
+                let tmp = false
+                for (let index in this.loads) {
+                    tmp |= this.loads[index]
+                }
+                return tmp
             }
         },
         methods: {
             getUserByWidForUser() {
-                getUserByWidForUser(this.uid).then((res) => {
+                getUserByUidForUser(this.uid).then((res) => {
                     if (res.status === 200 && res.data.flag === true) {
                         this.user = res.data.data
-                        console.log(this.user)
                     }
+                    this.loads[0] = false
                 }).catch((error) => {
                     console.log(error)
+                    this.loads[0] = false
                 })
             }
         },

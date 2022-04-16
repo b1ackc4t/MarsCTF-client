@@ -1,12 +1,7 @@
 <template>
     <el-row>
         <el-form :inline="true" class="demo-form-inline">
-            <el-form-item>
-                <el-input placeholder="name"></el-input>
-            </el-form-item>
-            <el-form-item>
-                <el-button type="primary" @click="onSubmit">Query</el-button>
-            </el-form-item>
+            <SearchItem :options="options" @searchHandle="searchWriteupPage"></SearchItem>
         </el-form>
     </el-row>
 
@@ -73,20 +68,54 @@
 </template>
 
 <script>
-    import {getWriteupByPageForAdmin, removeWriteupForAdmin, reCheckForAdmin} from "@/api/writeup";
+    import {getWriteupByPageForAdmin, removeWriteupForAdmin, reCheckForAdmin, searchWriteupPage} from "@/api/writeup";
     import {ElMessage, ElMessageBox} from "element-plus";
+    import SearchItem from "@/components/smalltool/SearchItem";
 
     export default {
         name: "WriteupManager",
+        components: {SearchItem},
         data() {
             return {
                 pageSize: 10,
                 total: 100,
                 currentPage: 1,
                 wps: [],
+                options: [
+                    {
+                        value: 'wid',
+                        label: 'ID'
+                    },
+                    {
+                        value: 'title',
+                        label: '标题'
+                    },
+                    {
+                        value: 'uname',
+                        label: '作者'
+                    },
+                    {
+                        value: 'creTime',
+                        label: '发表时间'
+                    },
+                ]
             }
         },
         methods: {
+            searchWriteupPage(key, value) {
+                searchWriteupPage(key, value, this.pageSize, this.currentPage).then((res) => {
+                    if (res.status === 200 && res.data.flag === true) {
+                        this.total = res.data.data.total
+                        this.currentPage = res.data.data.pageNum
+                        this.wps = res.data.data.list
+                    }
+                }).catch((error) => {
+                    ElMessage({
+                        message: error,
+                        type: 'error',
+                    })
+                })
+            },
             getWriteupByPageForAdmin() {
                 getWriteupByPageForAdmin(this.pageSize, this.currentPage).then((res) => {
                     if (res.status === 200 && res.data.flag === true) {

@@ -2,28 +2,34 @@
     <div class="col-3">
         <div class="card">
             <div class="card-header p-3 pt-2">
-                <div class="icon icon-lg icon-shape bg-gradient-dark shadow-dark text-center border-radius-xl mt-n4 position-absolute">
-                    <i class="material-icons opacity-10">account_circle</i>
+                <div class="icon icon-lg icon-shape bg-gradient-dark shadow-dark text-center border-radius-xl mt-n4 position-absolute middle">
+                    <svg class="svg-icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-ba633cb8=""><path fill="currentColor" d="M288 320a224 224 0 1 0 448 0 224 224 0 1 0-448 0zm544 608H160a32 32 0 0 1-32-32v-96a160 160 0 0 1 160-160h448a160 160 0 0 1 160 160v96a32 32 0 0 1-32 32z"></path></svg>
                 </div>
                 <div class="text-end pt-1">
-                    <router-link to="/editUserInfo" v-if="isMe"><a href="#"><i class="material-icons opacity-10" >edit</i></a></router-link>
-                    <a v-else><i class="material-icons opacity-10">favorite_border</i></a>
+                    <router-link to="/editUserInfo" v-if="isMe"><a href="#">
+                        <svg class="svg-icon2" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-ba633cb8=""><path d="m199.04 672.64 193.984 112 224-387.968-193.92-112-224 388.032zm-23.872 60.16 32.896 148.288 144.896-45.696L175.168 732.8zM455.04 229.248l193.92 112 56.704-98.112-193.984-112-56.64 98.112zM104.32 708.8l384-665.024 304.768 175.936L409.152 884.8h.064l-248.448 78.336L104.32 708.8zm384 254.272v-64h448v64h-448z" fill="currentColor"></path></svg>
+                    </a></router-link>
+                    <a v-else>
+                        <svg class="svg-icon2" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-ba633cb8=""><path fill="currentColor" d="M283.84 867.84 512 747.776l228.16 119.936a6.4 6.4 0 0 0 9.28-6.72l-43.52-254.08 184.512-179.904a6.4 6.4 0 0 0-3.52-10.88l-255.104-37.12L517.76 147.904a6.4 6.4 0 0 0-11.52 0L392.192 379.072l-255.104 37.12a6.4 6.4 0 0 0-3.52 10.88L318.08 606.976l-43.584 254.08a6.4 6.4 0 0 0 9.28 6.72z"></path></svg>
+                    </a>
                 </div>
             </div>
             <div class="card-body text-start">
                 <h4>基本简介</h4>
-                <p class="fw-normal">昵称：<span class="fw-bolder">{{uname}}</span></p>
-                <p class="fw-normal">性别：<span class="fw-bolder">{{sex}}</span></p>
-                <p class="fw-normal">技能：<span class="fw-bolder">{{skill}}</span></p>
-                <p class="fw-normal">学校/单位：<span class="fw-bolder">{{unit}}</span></p>
-                <p class="fw-normal">签名：<span class="fw-bolder">{{sign}}</span></p>
+                <div class="fw-normal">段位：<el-tag class="ml-2" :type="rankColor"><span class="fw-bolder">{{title}}</span></el-tag></div>
+                <div class="fw-normal">昵称：<span class="fw-bolder">{{uname}}</span></div>
+                <div class="fw-normal">性别：<span class="fw-bolder">{{sex}}</span></div>
+                <div class="fw-normal">技能：<span class="fw-bolder">{{skill}}</span></div>
+                <div class="fw-normal">学校/单位：<span class="fw-bolder">{{unit}}</span></div>
+                <div class="fw-normal">积分：<span class="fw-bolder">{{score}}</span></div>
+                <div class="fw-normal">签名：<span class="fw-bolder">{{sign}}</span></div>
 
             </div>
         </div>
     </div>
     <div class="col-3">
         <div class="card">
-            <div class="card-body p-3 pt-2 bg-transparent mx-3 z-index-2">
+            <div class="card-body p-3 pt-2 bg-transparent mx-3 z-index-2" style="overflow-x: auto">
                 <div id="chart1" style="height:300px;"></div>
 
             </div>
@@ -31,7 +37,7 @@
     </div>
     <div class="col-6">
         <div class="card">
-            <div class="card-body p-3 pt-2 bg-transparent mx-3 z-index-2 h-100">
+            <div class="card-body p-3 pt-2 bg-transparent mx-3 z-index-2 h-100" style="overflow-x: auto">
                 <div class="chart h-100">
                     <div id="chart2" style="height:300px;"></div>
                 </div>
@@ -61,7 +67,10 @@
                 sign: "",
                 userScore: [0, 0, 0, 0, 0, 0],
                 allScore: [0, 0, 0, 0, 0, 0],
-                myMax: 0
+                myMax: 0,
+                score: 0,
+                rankColor: 'info',
+                title: ""
             }
         },
         methods: {
@@ -334,6 +343,30 @@
                     this.skill = "skill" in this.user ? this.user.skill : ""
                     this.unit = "unit" in this.user ? this.user.unit : ""
                     this.sign = "sign" in this.user ? this.user.sign : ""
+                    this.score = "score" in this.user ? this.user.score : ""
+                    this.title = "title" in this.user ? this.user.title : ""
+                    this.level = "level" in this.user ? this.user.level : ""
+                    switch (this.level) {
+                        case 0:
+                            this.rankColor = "info"
+                            break
+                        case 1:
+                            this.rankColor = "success"
+                            break
+                        case 2:
+                            this.rankColor = "primary"
+                            break
+                        case 3:
+                            this.rankColor = "warning"
+                            break
+                        case 4:
+                            this.rankColor = "danger"
+                            break
+                        default:
+                            this.rankColor = "danger"
+                            break
+
+                    }
                     this.getScoreChart()
                 }
 
@@ -351,5 +384,23 @@
 </script>
 
 <style scoped>
-
+    .svg-icon {
+        width: 1.6em;
+        height: 1.6em;
+        fill: currentColor;
+        color: white;
+        overflow: hidden;
+    }
+    .middle {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .svg-icon2 {
+        width: 1.6em;
+        height: 1.6em;
+        fill: currentColor;
+        color: black;
+        overflow: hidden;
+    }
 </style>

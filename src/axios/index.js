@@ -4,7 +4,7 @@ import {server} from '@/api/config'
 
 const requests = axios.create({
     baseURL: server,
-    timeout: 6000, // 请求超时时间
+    timeout: 15000, // 请求超时时间
     withCredentials: true
 })
 requests.defaults.withCredentials = true;

@@ -70,4 +70,13 @@ export function getChaTags() {
     })
 }
 
-
+export function searchTagPage(key, value, pageSize, pageNum) {
+    return requests({
+        url: `/api/admin/chaTag/search/${pageSize}/${pageNum}`,
+        method: 'get',
+        params: {
+            key: key,
+            value: value
+        }
+    })
+}

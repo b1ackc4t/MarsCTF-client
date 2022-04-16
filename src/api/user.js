@@ -18,13 +18,14 @@ export function getMe() {
  * @param password
  * @returns {AxiosPromise}
  */
-export function login(username, password) {
+export function login(username, password, remember) {
     return requests({
         url: '/api/login',
         method: 'post',
         data: qs.stringify({
             username: username,
-            password: password
+            password: password,
+            'remember-me': remember
         })
     })
 }
@@ -131,9 +132,20 @@ export function getAllUserByPage(pageSize, pageNum) {
     })
 }
 
-export function getUserByWidForUser(uid) {
+export function getUserByUidForUser(uid) {
     return requests({
         url: `/api/user/${uid}`,
         method: 'get'
+    })
+}
+
+export function searchUserPage(key, value, pageSize, pageNum) {
+    return requests({
+        url: `/api/user/search/${pageSize}/${pageNum}`,
+        method: 'get',
+        params: {
+            key: key,
+            value: value
+        }
     })
 }
