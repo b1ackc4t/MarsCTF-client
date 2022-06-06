@@ -39,7 +39,7 @@
     import SimpleCard from '../components/card/Simple1'
     import Ranking from '../components/table/Ranking'
     import ChartCard from '../components/card/Simple2'
-    import * as echarts from 'echarts';
+    import {init} from 'echarts';
     import NumCard from '../components/card/Simple3'
     import Notice from '../components/table/NoticeList'
     import {getInfoCount, getChaCountByType} from "@/api/stat";
@@ -97,12 +97,10 @@
                 getChaCountByType().then((res) => {
                     if (res.status === 200 && res.data.flag === true) {
                         let chaType = res.data.data
-                        console.log(chaType)
                         for (let index in this.type) {
-                            console.log(chaType[this.type[index].toLowerCase() + "Num"])
                             this.typeNum.push(chaType[this.type[index].toLowerCase() + "Num"])
                         }
-                        var myChart = echarts.init(document.getElementById('myChart'));
+                        var myChart = init(document.getElementById('myChart'));
                         document.getElementById('myChart').setAttribute('_echarts_instance_', '')
                         var option
                         option = {

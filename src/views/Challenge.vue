@@ -1,5 +1,5 @@
 <template>
-    <div class="pt-3">
+    <div class="pt-3 mb-4">
         <TypeTab :current-type="currentType" :current-tag="currentTag"></TypeTab>
     </div>
 

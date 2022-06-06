@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <title><%= htmlWebpackPlugin.options.title %></title>
+    <% for(var css of htmlWebpackPlugin.options.cdn.css) { %>
+    <link rel="stylesheet" href="<%=css%>">
+    <% } %>
   </head>
   <body class="bg-gray-200">
     <noscript>
@@ -14,8 +17,15 @@
     <div id="app"></div>
     <!-- built files will be auto injected -->
 
+
+    <% for(var js of htmlWebpackPlugin.options.cdn.js) { %>
+    <script  src="<%=js%>" ></script>
+    <% } %>
     <script src="./static/js/bootstrap.min.js"></script>
     <script src="./static/js/material-dashboard.min.js"></script>
+    <script src="./static/js/echarts.min.js"></script>
+
+
 
   </body>
 </html>

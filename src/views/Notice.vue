@@ -1,5 +1,5 @@
 <template>
-    <div class="pt-4" v-loading.fullscreen.lock="loading">
+    <div class="pt-4 mb-4" v-loading.fullscreen.lock="loading">
         <NoticeCard v-for="notice in notices" :key="notice.nid" :notice="notice"></NoticeCard>
         <el-row>
             <el-pagination

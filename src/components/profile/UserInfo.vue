@@ -48,7 +48,7 @@
 </template>
 
 <script>
-    import * as echarts from 'echarts';
+    import {init} from 'echarts';
     import {getScoreChart} from "@/api/score";
     import {ElMessage} from "element-plus";
 
@@ -117,7 +117,7 @@
                 })
             },
             drawChart() {
-                var myChart = echarts.init(document.getElementById('chart1'))
+                var myChart = init(document.getElementById('chart1'))
                 // 指定图表的配置项和数据
                 var option = {
                     color: ['#FFE434'],
@@ -185,7 +185,7 @@
                 };
                 // 使用刚指定的配置项和数据显示图表。
                 myChart.setOption(option);
-                var myChart2 = echarts.init(document.getElementById('chart2'));
+                var myChart2 = init(document.getElementById('chart2'));
                 var app = {};
                 const posList = [
                     'left',

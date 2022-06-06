@@ -1,5 +1,4 @@
 import requests from "@/axios";
-import {server} from "@/api/config";
 
 /**
  * 上传文件
@@ -31,7 +30,7 @@ export function removeFile(id) {
 
 export function download(id) {
     // window.open(`${server}/api/user/downloadCTFFile/${id}`)
-    window.location.href = `${server}/api/user/downloadCTFFile/${id}`
+    window.location.href = `${requests.defaults.baseURL}/api/user/downloadCTFFile/${id}`
 }
 
 export function uploadImageForWP(fileObj) {

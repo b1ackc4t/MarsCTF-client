@@ -1,5 +1,5 @@
 <template>
-    <el-row class="pt-4" :gutter="20" v-loading.fullscreen.lock="loading">
+    <el-row class="pt-4 mb-4" :gutter="20" v-loading.fullscreen.lock="loading">
         <el-col :span="6">
             <LearnList v-model="currentType"></LearnList>
         </el-col>

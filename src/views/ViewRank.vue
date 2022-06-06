@@ -1,7 +1,7 @@
 <template>
-    <div class="pt-4" v-loading.fullscreen.lock="loading">
-        <BodyCard style="overflow-x: auto">
-                <UserTable :users="users"></UserTable>
+    <div class="pt-4 mb-4" v-loading.fullscreen.lock="loading">
+        <BodyCard>
+                <UserTable :users="users" style="overflow-x: auto"></UserTable>
 
             <el-row class="mt-3" justify="center">
                 <el-pagination

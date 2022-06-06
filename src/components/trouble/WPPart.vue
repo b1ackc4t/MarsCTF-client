@@ -18,8 +18,7 @@
                             <th class="text-uppercase text-secondary font-weight-bolder opacity-7">标题</th>
                             <th class="text-uppercase text-secondary font-weight-bolder opacity-7 ps-2">用户名</th>
                             <th class="text-uppercase text-secondary font-weight-bolder opacity-7 ps-2">得分</th>
-                            <th>
-                            </th>
+
                         </tr>
                         </thead>
                         <tbody v-if="wps.length > 0">
@@ -34,13 +33,12 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <p class="font-weight-normal mb-0">{{wp.uname}}</p>
+                                    <router-link :to="{ name: 'profile', params: { uid: wp.uid }}">
+                                        <p class="font-weight-normal mb-0">{{wp.uname}}</p>
+                                    </router-link>
                                 </td>
                                 <td>
                                     <p class="font-weight-normal mb-0">{{wp.score}}</p>
-                                </td>
-                                <td class="align-middle">
-                                    <i class="material-icons">thumb_up</i>
                                 </td>
                             </tr>
                         </tbody>

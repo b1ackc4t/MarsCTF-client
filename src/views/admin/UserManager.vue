@@ -229,6 +229,7 @@
                 }
                 this.dialogStatus = 'save'
                 this.dialogVisible = true
+
             },
             openUpdateDialog(user) {
                 this.rules = {

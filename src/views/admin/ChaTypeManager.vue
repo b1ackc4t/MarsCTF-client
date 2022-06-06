@@ -121,10 +121,6 @@
                 },
                 options: [
                     {
-                        value: 'tid',
-                        label: 'ID'
-                    },
-                    {
                         value: 'tname',
                         label: '类型'
                     },

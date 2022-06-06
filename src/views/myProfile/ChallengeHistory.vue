@@ -17,6 +17,7 @@
 <script>
     import {getChallengeStatus} from "@/api/score";
     import {ElMessage} from "element-plus";
+    import {getMe} from "@/api/user";
 
     export default {
         name: "ChallengeHistory",
@@ -38,16 +39,38 @@
                 })
             },
             getChallengeStatus() {
-                getChallengeStatus(this.uid).then((res) => {
-                    if (res.status === 200 && res.data.flag === true) {
-                        this.challengeHistorys = res.data.data
-                    }
-                }).catch((error) => {
-                    ElMessage({
-                        message: error,
-                        type: 'error',
+                if (this.uid == null) {
+                    getMe().then((res) => {
+                        if (res.status === 200 && res.data.flag === true) {
+                            this.user = res.data.data
+                            getChallengeStatus(this.user.uid).then((res) => {
+                                if (res.status === 200 && res.data.flag === true) {
+                                    this.challengeHistorys = res.data.data
+                                }
+                            }).catch((error) => {
+                                ElMessage({
+                                    message: error,
+                                    type: 'error',
+                                })
+                            })
+                        }
+                    }).catch((error) => {
+                        console.log(error)
+                        this.loads[0] = false
                     })
-                })
+                } else {
+                    getChallengeStatus(this.uid).then((res) => {
+                        if (res.status === 200 && res.data.flag === true) {
+                            this.challengeHistorys = res.data.data
+                        }
+                    }).catch((error) => {
+                        ElMessage({
+                            message: error,
+                            type: 'error',
+                        })
+                    })
+                }
+
             },
             tableRowClassName(obj) {
                 if (obj.row.status === 'success') {

@@ -13,7 +13,7 @@
                 </el-input>
             </el-row>
             <el-row class="mb-3 text-start edit-padding">
-                <MDEditor v-model="learnInfo.text"></MDEditor>
+                <MDEditor v-model="learnInfo.text" :upload-image-func="uploadImageForLearn"></MDEditor>
             </el-row>
             <el-form-item label="分类" prop="tid">
                 <el-select v-model="learnInfo.tid" placeholder="Select">
@@ -59,6 +59,7 @@
     import {ElMessage} from "element-plus";
     import {getLearningByLidForAdminEdit, updateLearning} from "@/api/learning";
     import MDEditor from "@/components/smalltool/MDEditor";
+    import {uploadImageForLearn} from "@/api/file";
 
     export default {
         name: "EditLearningView",
@@ -77,6 +78,7 @@
                     cids: []
                 },
                 types: [],
+                uploadImageForLearn
             }
         },
         methods: {

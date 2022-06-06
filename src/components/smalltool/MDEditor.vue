@@ -13,7 +13,7 @@
 </template>
 
 <script>
-    import {server} from "@/api/config";
+    import {inject} from 'vue'
     import {ElMessage} from "element-plus";
 
     export default {
@@ -25,7 +25,7 @@
         },
         data() {
             return {
-
+                server:null
             }
         },
         computed: {
@@ -44,7 +44,7 @@
                     this.uploadImageFunc(files[index]).then((res) => {
                         if (res.status === 200 && res.data.flag === true) {
                             insertImage({
-                                url: `${server}${res.data.data}`,
+                                url: `${this.server}${res.data.data}`,
                                 // desc: ' '
                             })
                         }
@@ -57,6 +57,9 @@
                 }
 
             }
+        },
+        mounted() {
+            this.server = inject('server')
         }
     }
 </script>

@@ -68,7 +68,7 @@
     import {getWriteupByWidForMe, updateWriteup} from "@/api/writeup";
     import {ElMessage} from "element-plus";
     import {uploadImageForWP} from "@/api/file";
-    import {server} from "@/api/config";
+    import {inject} from 'vue'
 
     var sep = ' '
     export default {
@@ -89,14 +89,9 @@
                     wpTags: []
                 },
                 tmpWpTags: [],
-                // dialogVisible: false,
-                // dialogTitles: {
-                //     save: '提交wp',
-                //     update: '修改wp'
-                // },
-                // dialogStatus: 'save',
                 inputVisible: false,
-                inputValue: ''
+                inputValue: '',
+                server: null
             }
         },
         methods: {
@@ -152,7 +147,7 @@
                     uploadImageForWP(files[index]).then((res) => {
                         if (res.status === 200 && res.data.flag === true) {
                             insertImage({
-                                url: `${server}${res.data.data}`,
+                                url: `${this.server}${res.data.data}`,
                                 // desc: ' '
                             })
                         }
@@ -167,6 +162,7 @@
             }
         },
         mounted() {
+            this.server = inject('server')
             this.getWriteupByWidForMe()
         }
     }

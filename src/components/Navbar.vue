@@ -20,6 +20,14 @@
                             </router-link>
                         </li>
                         <li class="nav-item">
+                            <span @click="gotoLearn">
+                                 <a class="nav-link d-flex align-items-center justify-content-center fs-6" href="javascript:;">
+                                     <svg class="svg-icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-ba633cb8=""><path fill="currentColor" d="M576 128v288l96-96 96 96V128h128v768H320V128h256zm-448 0h128v768H128V128z"></path></svg>
+                                     学习
+                                 </a>
+                            </span>
+                        </li>
+                        <li class="nav-item">
                             <span @click="gotoChallenge">
                                 <a class="nav-link d-flex align-items-center justify-content-center fs-6" href="javascript:;">
                                     <svg class="svg-icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-ba633cb8=""><path fill="currentColor" d="M288 128h608L736 384l160 256H288v320h-96V64h96v64z"></path></svg>
@@ -32,14 +40,6 @@
                                  <a class="nav-link d-flex align-items-center justify-content-center fs-6" href="javascript:;">
                                      <svg class="svg-icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-ba633cb8=""><path fill="currentColor" d="M704 192h160v736H160V192h160v64h384v-64zM288 512h448v-64H288v64zm0 256h448v-64H288v64zm96-576V96h256v96H384z"></path></svg>
                                      Writeup
-                                 </a>
-                            </span>
-                        </li>
-                        <li class="nav-item">
-                            <span @click="gotoLearn">
-                                 <a class="nav-link d-flex align-items-center justify-content-center fs-6" href="javascript:;">
-                                     <svg class="svg-icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-ba633cb8=""><path fill="currentColor" d="M576 128v288l96-96 96 96V128h128v768H320V128h256zm-448 0h128v768H128V128z"></path></svg>
-                                     学习
                                  </a>
                             </span>
                         </li>
@@ -112,12 +112,10 @@
                                 <Alert v-if="checkError1">用户名或密码错误</Alert>
                                 <form role="form text-left" autocomplete="new-password">
                                     <div class="input-group input-group-outline my-3">
-                                        <label class="form-label">Username</label>
-                                        <input type="text" v-model="username" class="form-control" autocomplete="new-password">
+                                        <input type="text" v-model="username" class="form-control" autocomplete="new-password" placeholder="用户名">
                                     </div>
                                     <div class="input-group input-group-outline my-3">
-                                        <label class="form-label">Password</label>
-                                        <input type="password" v-model="password" class="form-control" autocomplete="new-password">
+                                        <input type="password" v-model="password" class="form-control" autocomplete="new-password" placeholder="密码">
                                     </div>
                                     <div class="form-check form-switch d-flex align-items-center">
                                         <input class="form-check-input" type="checkbox" id="rememberMe" name="remember-me" checked="" v-model="remember">
@@ -153,16 +151,13 @@
                                 <Alert v-if="checkError2">{{msg}}</Alert>
                                 <form role="form text-left" autocomplete="new-password">
                                     <div class="input-group input-group-outline my-3">
-                                        <label class="form-label">Name</label>
-                                        <input type="text" class="form-control" autocomplete="new-password" v-model="newUsername">
+                                        <input type="text" class="form-control" autocomplete="new-password" v-model="newUsername" placeholder="用户名">
                                     </div>
                                     <div class="input-group input-group-outline my-3">
-                                        <label class="form-label">Password</label>
-                                        <input type="password" class="form-control" autocomplete="new-password" v-model="newPassword">
+                                        <input type="password" class="form-control" autocomplete="new-password" v-model="newPassword" placeholder="密码">
                                     </div>
                                     <div class="input-group input-group-outline my-3">
-                                        <label class="form-label">Re-Password</label>
-                                        <input type="password" class="form-control" autocomplete="new-password" v-model="newPasswordR">
+                                        <input type="password" class="form-control" autocomplete="new-password" v-model="newPasswordR" placeholder="重复密码">
                                     </div>
                                     <div class="form-check form-check-info text-left">
                                         <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked="">

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="card text-start">
+        <div class="card text-start"  v-if="challenge != null">
             <div class="card-header">
                 <div class="row">
                     <div class="col-8"><h3>{{challenge.cname}}</h3></div>
@@ -10,7 +10,10 @@
             <div class="card-body">
                 <div class="row">
                     <p>
-                        出题人：<span class="fw-bold">{{challenge.masterName}}</span>
+                        出题人：
+                        <router-link :to="{ name: 'profile', params: { uid: challenge.masterUid }}">
+                            <span class="fw-bold">{{challenge.masterName}}</span>
+                        </router-link>
                     </p>
                     <p>
                         涉及知识点：
@@ -87,7 +90,7 @@
         },
         data() {
             return {
-                challenge: {},
+                challenge: null,
                 flag: '',
                 openContainer: 0,
                 containerInfo: {
@@ -155,6 +158,10 @@
                         if (res.status === 200 && res.data.flag === true) {
                             this.containerInfo = null
                             this.openContainer = 0
+                            ElMessage({
+                                message: res.data.msg,
+                                type: 'success',
+                            })
                         } else {
                             ElMessage({
                                 message: res.data.msg,

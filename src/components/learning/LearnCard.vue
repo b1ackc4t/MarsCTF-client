@@ -5,7 +5,7 @@
                 <h5 class="text-black">{{learnInfo.title}}</h5>
             </div>
         </div>
-        <div class="wp-body" @click="enterWP">
+        <div class="wp-body" @click="enterLearn">
             <div>
                 {{learnInfo.descr}}
             </div>

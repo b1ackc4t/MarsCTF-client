@@ -59,6 +59,7 @@ const router = createRouter({
                             path: 'challengeHistory',
                             name: 'otherChallengeHistory',
                             component: () => import('../views/myProfile/ChallengeHistory'),
+                            props: true,
                         },
                         {
                             path: 'writeupPanel',

@@ -2,7 +2,7 @@
     <div>
         <el-divider></el-divider>
         <el-backtop />
-        Footer
+        Github: <a href="https://github.com/b1ackc4t">b1ackc4t</a>
     </div>
 </template>
 

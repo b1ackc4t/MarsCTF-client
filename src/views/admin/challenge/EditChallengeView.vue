@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-form
-                label-width="100px"
+                label-width="120px"
                 :rules="rules"
                 class="text-start"
                 :model="currentChallenge"
@@ -40,7 +40,7 @@
                         <el-upload
                                 class="upload-demo"
                                 drag
-                                :action="server + '/api/admin/uploadCTFFile'"
+                                :action="inject('server') + '/api/admin/uploadCTFFile'"
                                 :with-credentials="true"
                                 :limit="1"
                                 :on-remove="removeFileSubmit"
@@ -72,11 +72,11 @@
                         />
                     </el-form-item>
                     <div v-if="currentChallenge.isDynamic">
-                        <el-form-item label="docker镜像名" prop="dockerImage" >
+                        <el-form-item label="docker镜像名" prop="imageName" >
                             <el-input v-model="currentChallenge.imageName"></el-input>
                         </el-form-item>
-                        <el-form-item label="docker端口" prop="dockerImage" >
-                            <el-input v-model="currentChallenge.srcPort"></el-input>
+                        <el-form-item label="docker端口" prop="srcPort" >
+                            <el-input v-model="currentChallenge.srcPort" oninput="value=value.replace(/[^0-9.]/g,'')"></el-input>
                         </el-form-item>
                         <el-form-item label="cpu数量上限" prop="cpuLimit">
                             <el-input v-model="currentChallenge.cpuLimit"  oninput="value=value.replace(/[^0-9.]/g,'')"  placeholder="0.5" />
@@ -171,7 +171,7 @@
     import {ElMessage} from "element-plus";
     import {download, removeFile} from "@/api/file";
     import {getAllType} from "@/api/chaType";
-    import {server} from "@/api/config";
+    import {inject} from 'vue'
 
     export default {
         name: "EditChallengeView",
@@ -183,7 +183,7 @@
         },
         data() {
             return {
-                server,
+                inject,
                 fileList: [],
                 currentChallenge: {
                     cname: '',
@@ -202,6 +202,20 @@
                 },
                 challengeTypes: [],
                 rules: {
+                    imageName: [
+                        {
+                            required: true,
+                            message: '镜像名不能为空',
+                            trigger: 'blur',
+                        }
+                    ],
+                    srcPort: [
+                        {
+                            required: true,
+                            message: '端口不能为空',
+                            trigger: 'blur',
+                        },
+                    ],
                     cname: [
                         {
                             required: true,

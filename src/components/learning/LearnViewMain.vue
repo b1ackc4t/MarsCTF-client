@@ -77,7 +77,7 @@
             tableRowClassName(obj) {
                 if (obj.row.status == null) {
                     return 'warning-row'
-                } else if (obj.row.status === false) {
+                } else if (obj.row.status === "fail") {
                     return 'danger-row'
                 } else {
                     return 'success-row'
@@ -86,7 +86,7 @@
             getStatusMsg(status) {
                 if (status == null) {
                     return '未挑战'
-                } else if (status === false) {
+                } else if (status === "fail") {
                     return '挑战失败'
                 } else {
                     return '挑战成功'

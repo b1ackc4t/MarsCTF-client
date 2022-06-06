@@ -1,5 +1,5 @@
 <template>
-    <div class="pt-4" v-loading.fullscreen.lock="loading">
+    <div class="pt-4 mb-4" v-loading.fullscreen.lock="loading">
         <div class="searchArea mb-3">
 <!--            <el-row align="middle">-->
             <span>
@@ -10,7 +10,6 @@
 
                 </el-radio-group>
             </span>
-
             <span class="text-end">
                 <el-input class="w-60 searchInput" v-model="searchText"></el-input>
                 <el-button :icon="Search" type="danger" class="searchBtn" @click="searchWriteupByPageForUser"></el-button>
@@ -40,7 +39,14 @@
     import {ElMessage} from "element-plus";
     import {Search} from '@element-plus/icons-vue'
     import {getAllType} from "@/api/chaType";
-
+    // import { ElLoading } from 'element-plus'
+    //
+    // let loadingInstance = ElLoading.service({
+    //     lock: true,
+    //     background: 'rgba(0, 0, 0, 0.7)',
+    //     // fullscreen:false
+    // });
+    // console.log(loadingInstance)
     export default {
         name: "WriteupPanel",
         components: {

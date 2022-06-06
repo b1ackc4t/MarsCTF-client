@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div v-loading.fullscreen.lock="loading">
         <el-row>
             <el-form :inline="true" class="demo-form-inline">
                 <SearchItem :options="options" @searchHandle="searchChallengePage"></SearchItem>
@@ -103,8 +103,8 @@
                         value: 'uname',
                         label: '出题者'
                     }
-                ]
-
+                ],
+                loading: false
             }
         },
         methods: {

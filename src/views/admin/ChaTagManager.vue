@@ -135,10 +135,6 @@
                 },
                 options: [
                     {
-                        value: 'tgid',
-                        label: 'ID'
-                    },
-                    {
                         value: 'tgname',
                         label: '名称'
                     },

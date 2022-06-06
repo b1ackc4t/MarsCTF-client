@@ -52,10 +52,8 @@
             }
         },
         methods: {
-            switchAside(event) {
+            switchAside() {
                 this.$store.commit('switchAside')
-                console.log(event.currentTarget.getAttribute("icon"))
-
             },
             goBack() {
                 this.$router.go(-1)

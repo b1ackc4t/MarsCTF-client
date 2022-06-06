@@ -51,7 +51,6 @@
             },
         },
         mounted() {
-            console.log(this.wpInfo)
             if (this.wpInfo.done) {
                 if (this.wpInfo.status) {
                     this.statusClass = 'success'
