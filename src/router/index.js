@@ -1,4 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { getToken } from '../utils/auth'
+import { ElMessage } from 'element-plus';
+import store from '../store';
+import types from '../store/types';
+import { whiteList } from '../utils/config';
 
 const router = createRouter({
     history: createWebHistory(), // hash模式：createWebHashHistory，history模式：createWebHistory
@@ -155,6 +160,9 @@ const router = createRouter({
             name: 'admin',
             redirect: '/admin/userManager',
             component: () => import('../views/admin/Index'),
+            meta: {
+                requireAdmin: true
+            },
             children: [
                 {
                     path: '/admin/userManager',
@@ -256,6 +264,68 @@ const router = createRouter({
             ]
         },
     ]
+})
+
+/**
+ * 判断是否具有页面的权限
+ * @param {*} route 
+ * @param {*} next 
+ * @param {*} user 
+ */
+function checkAuth(route, next, user) {
+    let auth = "ROLE_user"
+    if (route.meta.requireAdmin) {
+        auth = "ROLE_admin"
+    }
+    if (auth === user.role) {
+        next()
+    } else {
+        ElMessage({
+            message: "请先登录",
+            type: 'warning',
+        })
+        next({ name: 'main' })
+    }
+}
+
+router.beforeEach((to, from, next) => {
+    if (getToken()) {
+        // 是否已经请求过
+        if (store.state.userStore.user !== null) {
+            checkAuth(to, next, store.state.userStore.user)
+            return
+        }
+        // 尝试请求用户信息
+        store.dispatch(types.GET_USER_INFO).then(() => {
+            checkAuth(to, next, store.state.userStore.user)
+        }).catch((error) => {
+            if (whiteList.indexOf(to.path) === -1) {
+                console.log(error)
+                ElMessage({
+                    message: "请先登录",
+                    type: 'warning',
+                })
+                next({ name: 'main' }) // 否则全部重定向到主页
+            } else {
+                next()
+            }
+            
+        })
+    } else {
+        // 没有token
+        if (whiteList.indexOf(to.path) !== -1) {
+            // 在免登录白名单，直接进入
+            next()
+            return
+        } else {
+            ElMessage({
+                message: "请先登录",
+                type: 'warning',
+            })
+            next({name: 'main'}) // 否则全部重定向到主页
+            return
+        }
+    }
 })
 
 export default router

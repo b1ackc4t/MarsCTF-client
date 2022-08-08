@@ -24,7 +24,6 @@
     import Aside from "@/components/admin/nav/Aside";
     import HeaderNav from "@/components/admin/nav/HeaderNav";
     import Footer from "@/components/admin/Footer";
-    import {getMe} from "@/api/user";
 
     export default {
         name: "Index",
@@ -40,14 +39,7 @@
             }
         },
         mounted() {
-            getMe().then((res) => {
-                if (res.status === 200 && res.data.flag === true) {
-                    this.user = res.data.data
-                }
-            }).catch((error) => {
-                console.log(error)
-                window.location.href="/"
-            })
+            this.user = this.$store.state.userStore.user
         }
     }
 </script>

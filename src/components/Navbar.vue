@@ -188,8 +188,9 @@
 
 <script>
     import Alert from "@/components/smalltool/Alert";
-    import {login, register, logout} from "@/api/user";
+    import {register} from "@/api/user";
     import {ElMessage} from "element-plus";
+    import types from "../store/types";
 
     export default {
         name: "Navbar",
@@ -214,14 +215,14 @@
         },
         methods: {
             gotoChallenge() {
-                if (this.user != null) {
+                // if (this.user != null) {
                     this.$router.push('/challenge')
-                } else {
-                    ElMessage({
-                        message: "请先登录",
-                        type: 'warning',
-                    })
-                }
+                // } else {
+                //     ElMessage({
+                //         message: "请先登录",
+                //         type: 'warning',
+                //     })
+                // }
             },
             gotoWriteup() {
                 if (this.user != null) {
@@ -268,7 +269,11 @@
 
             },
             login() {
-                login(this.username, this.password, this.remember).then((res) => {
+                this.$store.dispatch(types.LOGIN, {
+                    username: this.username,
+                    password: this.password, 
+                    remember: this.remember
+                }).then((res) => {
                     if (res.data.flag === false) {
                         this.checkError1 = true
                     } else {
@@ -298,7 +303,11 @@
                             message: "注册成功",
                             type: 'success',
                         })
-                        login(this.newUsername, this.newPassword).then(() => {
+                        this.$store.dispatch(types.LOGIN, {
+                            username: this.newUsername,
+                            password: this.newPassword,
+                            remember: false
+                        }).then(() => {
                             this.$router.go(0)
                         }).catch((error) => {
                             console.log(error)
@@ -307,9 +316,7 @@
                 })
             },
             logout() {
-                logout().then(() => {
-                    window.location.href="/"
-                }).catch((error) => {
+                this.$store.dispatch(types.LOGOUT).catch((error) => {
                     console.log(error)
                 })
             },

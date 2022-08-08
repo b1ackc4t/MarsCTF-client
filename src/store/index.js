@@ -1,4 +1,5 @@
 import { createStore } from 'vuex'
+import userStore from './modules/user'
 
 const store = createStore({
     state() {
@@ -10,6 +11,9 @@ const store = createStore({
         switchAside(state) {
             state.AsideOpened = !state.AsideOpened
         }
+    },
+    modules: {
+        userStore
     }
 })
 

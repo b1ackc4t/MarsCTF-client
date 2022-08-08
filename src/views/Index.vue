@@ -13,7 +13,7 @@
 
 <script>
     import Navbar from '../components/Navbar'
-    import {getMe} from '@/api/user'
+    // import types from '../store/types'
 
     export default {
         name: 'Index',
@@ -26,13 +26,7 @@
             }
         },
         mounted() {
-            getMe().then((res) => {
-                if (res.status === 200 && res.data.flag === true) {
-                    this.user = res.data.data
-                }
-            }).catch((error) => {
-                console.log(error)
-            })
+            this.user = this.$store.state.userStore.user
         }
     }
 </script>
