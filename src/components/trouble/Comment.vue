@@ -27,7 +27,7 @@
                             </div>
                             <div style="white-space: pre">{{comment.text}}</div>
                             <div v-if="user != null">
-                                <div class="comment-foot" v-if="user.uid === comment.uid || user.role === 'ROLE_admin'"><a href="javascript:" @click="removeComment(comment)">删除</a></div>
+                                <div class="comment-foot" v-if="user.uid === comment.uid || user.role === ROLES.ROLE_ADMIN"><a href="javascript:" @click="removeComment(comment)">删除</a></div>
                             </div>
                         </el-col>
                     </el-row>
@@ -55,6 +55,7 @@
     import userhead from '@/assets/img/userhead.png'
     import {ElMessage, ElMessageBox} from "element-plus";
     import {getMe} from "@/api/user";
+    import { ROLES } from '../../utils/config';
 
     export default {
         name: "Comment",
@@ -74,7 +75,8 @@
                 currentPage: 1,
                 comments: [],
                 text: '',
-                user: {}
+                user: {},
+                ROLES
             }
         },
         methods: {

@@ -121,6 +121,7 @@
     import {getAllUserByPage, saveUser, updateUser, removeUser, searchUserPage} from "@/api/user"
     import { ElMessage, ElMessageBox } from 'element-plus'
     import SearchItem from "@/components/smalltool/SearchItem";
+    import { ROLES } from '../../utils/config';
 
     var sep = ' '
     export default {
@@ -145,12 +146,12 @@
                 rules: null,
                 roles: [
                     {
-                        value: 'ROLE_user',
-                        label: 'ROLE_user',
+                        value: ROLES.ROLE_USER,
+                        label: ROLES.ROLE_USER,
                     },
                     {
-                        value: 'ROLE_admin',
-                        label: 'ROLE_admin'
+                        value: ROLES.ROLE_ADMIN,
+                        label: ROLES.ROLE_ADMIN
                     }
                 ],
                 dialogTitles: {

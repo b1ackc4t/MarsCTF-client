@@ -3,7 +3,7 @@ import { getToken } from '../utils/auth'
 import { ElMessage } from 'element-plus';
 import store from '../store';
 import types from '../store/types';
-import { whiteList } from '../utils/config';
+import { whiteList, ROLES } from '../utils/config';
 
 const router = createRouter({
     history: createWebHistory(), // hash模式：createWebHashHistory，history模式：createWebHistory
@@ -273,9 +273,13 @@ const router = createRouter({
  * @param {*} user 
  */
 function checkAuth(route, next, user) {
-    let auth = "ROLE_user"
+    if (user.role === ROLES.ROLE_ADMIN) {
+        next()
+        return
+    }
+    let auth = ROLES.ROLE_USER
     if (route.meta.requireAdmin) {
-        auth = "ROLE_admin"
+        auth = ROLES.ROLE_ADMIN
     }
     if (auth === user.role) {
         next()

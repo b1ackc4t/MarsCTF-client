@@ -3,6 +3,11 @@ import {getToken} from '../utils/auth'
 import { ElMessageBox } from 'element-plus'
 import router from '../router'
 import { whiteList } from '../utils/config'
+import store from '../store';
+import types from '../store/types';
+
+// 是否显示重新登录
+let isRelogin = { show: false };
 
 const requests = axios.create({
     baseURL: "",
@@ -27,50 +32,24 @@ requests.interceptors.response.use(res => {
 }, error => {
     const code = error.request.status;
     if (whiteList.indexOf(router.currentRoute.value.path)  === -1 && code === 401) {
+        if (isRelogin.show) {
+            return Promise.reject(error)
+        }
+        isRelogin.show = true
         ElMessageBox.confirm('登录状态已过期，请重新登录', '系统提示', {
             confirmButtonText: '重新登录',
             cancelButtonText: '取消',
             type: 'warning'
         }).then(() => {
-            router.push({ name: 'main' })
+            isRelogin.show = false
+            return store.dispatch(types.LOGOUT)
         }).catch(() => {
+            isRelogin.show = false
             return Promise.reject('无效的会话，或者会话已过期，请重新登录。')
         });
     } else {
         return Promise.reject(error)
     }
 })
-//     if () {
-//         ElMessageBox.confirm('登录状态已过期，请重新登录', '系统提示', {
-//             confirmButtonText: '重新登录',
-//             cancelButtonText: '取消',
-//             type: 'warning'
-//         }).then(() => {
-//             router.push({name: 'main'})
-//         }).catch(() => {
-            
-//         });
-//         return Promise.reject('无效的会话，或者会话已过期，请重新登录。')
-//     } else {
-//         return Promise.resolve(res.data)
-//     }
-// }, error => {
-//     console.log('err' + error)
-//     let { message } = error;
-//     if (message == "Network Error") {
-//         message = "后端接口连接异常";
-//     }
-//     else if (message.includes("timeout")) {
-//         message = "系统接口请求超时";
-//     }
-//     else if (message.includes("Request failed with status code")) {
-//         message = "系统接口" + message.substr(message.length - 3) + "异常";
-//     }
-//     ElMessage({
-//         message: message,
-//         type: 'error',
-//         duration: 5 * 1000
-//     })
-//     return Promise.reject(error)
 
 export default requests

@@ -191,6 +191,7 @@
     import {register} from "@/api/user";
     import {ElMessage} from "element-plus";
     import types from "../store/types";
+    import {ROLES} from "../utils/config"
 
     export default {
         name: "Navbar",
@@ -215,58 +216,19 @@
         },
         methods: {
             gotoChallenge() {
-                // if (this.user != null) {
-                    this.$router.push('/challenge')
-                // } else {
-                //     ElMessage({
-                //         message: "请先登录",
-                //         type: 'warning',
-                //     })
-                // }
+                this.$router.push('/challenge')
             },
             gotoWriteup() {
-                if (this.user != null) {
-                    this.$router.push('/writeupPanel')
-                } else {
-                    ElMessage({
-                        message: "请先登录",
-                        type: 'warning',
-                    })
-                }
-
+                this.$router.push('/writeupPanel')
             },
             gotoLearn() {
-                if (this.user != null) {
-                    this.$router.push('/learnPanel')
-                } else {
-                    ElMessage({
-                        message: "请先登录",
-                        type: 'warning',
-                    })
-                }
-
+                this.$router.push('/learnPanel')
             },
             gotoNotice() {
-                if (this.user != null) {
-                    this.$router.push('/notice')
-                } else {
-                    ElMessage({
-                        message: "请先登录",
-                        type: 'warning',
-                    })
-                }
-
+                this.$router.push('/notice')
             },
             gotoRank() {
-                if (this.user != null) {
-                    this.$router.push('/viewRank')
-                } else {
-                    ElMessage({
-                        message: "请先登录",
-                        type: 'warning',
-                    })
-                }
-
+                this.$router.push('/viewRank')
             },
             login() {
                 this.$store.dispatch(types.LOGIN, {
@@ -331,7 +293,7 @@
                 if (this.user != null) {
                     this.checkUser = true
                     this.username = this.user.uname
-                    if (this.user.role === 'ROLE_admin') {
+                    if (this.user.role === ROLES.ROLE_ADMIN) {
                         this.checkAdmin = true
                     }
                 }
