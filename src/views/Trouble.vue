@@ -15,7 +15,7 @@
                 <WPPart :cid="cid" @load4="() => {loads[4] = false}"></WPPart>
             </div>
             <div class="row mb-5">
-                <Ranking :cid="cid" @load5="() => {loads[5] = false}"></Ranking>
+                <TRanking :cid="cid" @load5="() => {loads[5] = false}"></TRanking>
             </div>
         </div>
     </div>
@@ -24,12 +24,12 @@
 <script>
     import MainInfo from "@/components/trouble/MainInfo";
     import WPPart from "@/components/trouble/WPPart";
-    import Ranking from "@/components/trouble/Ranking";
+    import TRanking from "../components/trouble/TRanking";
     import Comment from "@/components/trouble/Comment";
     import {getCommentByPage, saveComment, removeComment} from "@/api/chaComment";
     export default {
         name: "Trouble",
-        components: {Comment, Ranking, WPPart, MainInfo},
+        components: {Comment, TRanking, WPPart, MainInfo},
         props: {
             cid: Number
         },

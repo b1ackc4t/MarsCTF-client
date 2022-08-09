@@ -15,7 +15,6 @@
                             <th class="text-uppercase text-secondary font-weight-bolder opacity-7">排名</th>
                             <th class="text-uppercase text-secondary font-weight-bolder opacity-7">用户名</th>
                             <th class="text-uppercase text-secondary font-weight-bolder opacity-7 ps-2">时间</th>
-<!--                            <th class="text-uppercase text-secondary font-weight-bolder opacity-7 ps-2">学校/单位</th>-->
                         </tr>
                         </thead>
                         <tbody v-if="ranks.length > 0">
