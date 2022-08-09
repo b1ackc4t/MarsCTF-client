@@ -39,14 +39,7 @@
     import {ElMessage} from "element-plus";
     import {Search} from '@element-plus/icons-vue'
     import {getAllType} from "@/api/chaType";
-    // import { ElLoading } from 'element-plus'
-    //
-    // let loadingInstance = ElLoading.service({
-    //     lock: true,
-    //     background: 'rgba(0, 0, 0, 0.7)',
-    //     // fullscreen:false
-    // });
-    // console.log(loadingInstance)
+
     export default {
         name: "WriteupPanel",
         components: {
@@ -83,6 +76,7 @@
         },
         methods: {
             searchWriteupByPageForUser() {
+                this.loads[1] = true
                 searchWriteupByPageForUser(this.searchText, this.pageSize, this.currentPage).then((res) => {
                     if (res.status === 200 && res.data.flag === true) {
                         this.total = res.data.data.total
@@ -94,9 +88,10 @@
                         message: error,
                         type: 'error',
                     })
-                })
+                }).finally(() => { this.loads[1] = false })
             },
             getWriteupByPageForUser() {
+                this.loads[1] = true
                 getWriteupByPageForUser(this.pageSize, this.currentPage).then((res) => {
                     if (res.status === 200 && res.data.flag === true) {
                         this.total = res.data.data.total
@@ -113,6 +108,7 @@
                 })
             },
             getWriteupByTypePageForUser() {
+                this.loads[1] = true
                 getWriteupByTypePageForUser(this.pageSize, this.currentPage, this.currentType).then((res) => {
                     if (res.status === 200 && res.data.flag === true) {
                         this.total = res.data.data.total
@@ -129,6 +125,7 @@
                 })
             },
             getTypes() {
+                this.loads[0] = true
                 getAllType().then((res) => {
                     if (res.status === 200 && res.data.flag === true) {
                         this.types = res.data.data

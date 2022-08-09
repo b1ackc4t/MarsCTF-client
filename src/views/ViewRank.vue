@@ -51,6 +51,7 @@
         },
         methods: {
             getUserRankView() {
+                this.loads[0] = true
                 getUserRankView(this.pageSize, this.currentPage).then((res) => {
                     if (res.status === 200 && res.data.flag === true) {
                         this.total = res.data.data.total

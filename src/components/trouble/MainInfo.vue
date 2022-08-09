@@ -1,10 +1,14 @@
 <template>
-    <div>
-        <div class="card text-start"  v-if="challenge != null">
+    <div v-loading="loading">
+        <div class="card text-start" v-if="challenge != null">
             <div class="card-header">
                 <div class="row">
-                    <div class="col-8"><h3>{{challenge.cname}}</h3></div>
-                    <div class="col-4 align-self-center"><h5 class="text-end">分数：{{challenge.score}}</h5></div>
+                    <div class="col-8">
+                        <h3>{{challenge.cname}}</h3>
+                    </div>
+                    <div class="col-4 align-self-center">
+                        <h5 class="text-end">分数：{{challenge.score}}</h5>
+                    </div>
                 </div>
             </div>
             <div class="card-body">
@@ -18,8 +22,9 @@
                     <p>
                         涉及知识点：
                         <span v-if="challenge.tags != null && challenge.tags.length > 0">
-                            <span class="badge bg-gradient-primary clickAble me-1" v-for="tag in challenge.tagsView" :key="tag" @click="clickTag(tag)">
-                            {{tag}}
+                            <span class="badge bg-gradient-primary clickAble me-1" v-for="tag in challenge.tagsView"
+                                :key="tag" @click="clickTag(tag)">
+                                {{tag}}
                             </span>
                         </span>
                         <span v-else>无</span>
@@ -34,25 +39,30 @@
                     </p>
                     <p>
                         附件：
-                        <button v-if="challenge.fid != null" type="button" class="btn bg-gradient-info" @click="attachDownload">点击下载</button>
+                        <button v-if="challenge.fid != null" type="button" class="btn bg-gradient-info"
+                            @click="attachDownload">点击下载</button>
                         <span v-else>无</span>
                     </p>
                     <div v-if="challenge.isDynamic" class="text-center">
 
                         <div v-if="openContainer === 0">
-                            <button  type="button" class="btn bg-gradient-info" @click="startCreateContainer" style="margin-bottom: 0">启动实例</button>
+                            <button type="button" class="btn bg-gradient-info" @click="startCreateContainer"
+                                style="margin-bottom: 0">启动实例</button>
 
                         </div>
                         <div v-if="openContainer === 1" style="padding-top: 34px">
-                             <el-progress :percentage="100" :format="format" :indeterminate="true" class="progress"/>
+                            <el-progress :percentage="100" :format="format" :indeterminate="true" class="progress" />
                         </div>
                         <div v-if="openContainer === 2" style="padding-top: 34px">
                             <el-row justify="center" class="mb-1">
                                 <a :href="containerInfo.url" target="_blank">
-                                    <el-tag class="mx-1" size="large" style="font-size: 1.2rem">{{containerInfo.url}}</el-tag>
+                                    <el-tag class="mx-1" size="large" style="font-size: 1.2rem">{{containerInfo.url}}
+                                    </el-tag>
                                 </a>
-                                <el-button type="success" plain size="small" @click="addTimeContainer" style="margin-right: .25rem">增加时长</el-button>
-                                <el-button type="danger" plain size="small" @click="destroyContainer" class="mx-0">销毁容器</el-button>
+                                <el-button type="success" plain size="small" @click="addTimeContainer"
+                                    style="margin-right: .25rem">增加时长</el-button>
+                                <el-button type="danger" plain size="small" @click="destroyContainer" class="mx-0">销毁容器
+                                </el-button>
                             </el-row>
 
                             <div style="font-weight: bold">{{date}}</div>
@@ -65,7 +75,7 @@
             <div class="card-footer d-flex">
                 <div class="w-100">
                     <div class="input-group input-group-outline my-3">
-<!--                        <label class="form-label">FLAG</label>-->
+                        <!--                        <label class="form-label">FLAG</label>-->
                         <input type="text" class="form-control" placeholder="FLAG" v-model="flag">
                         <button class="btn btn-primary mb-0" @click="submitFlag">Submit flag</button>
                     </div>
@@ -101,7 +111,8 @@
                 date: null,
                 hour: "00",
                 min: '00',
-                second: '00'
+                second: '00',
+                loading: false,
             }
         },
         methods: {
@@ -116,6 +127,7 @@
                             type: 'success',
                         }
                     ).then(() => {
+                        this.loading = true
                         addTimeForUser(this.cid).then((res) => {
                             if (res.status === 200 && res.data.flag === true) {
                                 ElMessage({
@@ -128,12 +140,14 @@
                                     message: res.data.msg,
                                     type: 'warning',
                                 })
+                                this.loading = false
                             }
                         }).catch((error) => {
                             ElMessage({
                                 message: error,
                                 type: 'error',
                             })
+                            this.loading = false
                         })
                     })
                 } else {
@@ -154,6 +168,7 @@
                         type: 'error',
                     }
                 ).then(() => {
+                    this.loading = true
                     destroyContainer(this.cid).then((res) => {
                         if (res.status === 200 && res.data.flag === true) {
                             this.containerInfo = null
@@ -173,7 +188,7 @@
                             message: error,
                             type: 'error',
                         })
-                    })
+                    }).finally(() => { this.loading = false})
                 })
             },
             timeCalc() {
@@ -253,6 +268,7 @@
                 })
             },
             submitFlag() {
+                this.loading = true
                 submitFlag(this.cid, this.flag).then((res) => {
                     if (res.status === 200 && res.data.flag === true) {
                         this.$router.push({name: 'result', params: {
@@ -269,7 +285,7 @@
                         message: error,
                         type: 'error',
                     })
-                })
+                }).finally(() => { this.loading = false })
             },
             attachDownload() {
                 download(this.challenge.fid)

@@ -1,14 +1,14 @@
 <template>
-    <div>
+    <div v-loading="loading">
         <div class="card text-start">
             <div class="card-header">
                 <div class="row">
                     <h5>{{user.uname}}</h5>
-                        <div class="input-group input-group-lg input-group-outline">
-                            <!--                                        <label class="form-label">评论</label>-->
-                            <textarea class="form-control" v-model="text"></textarea>
-                            <button class="btn btn-primary mb-0" @click="saveComment">commit</button>
-                        </div>
+                    <div class="input-group input-group-lg input-group-outline">
+                        <!--                                        <label class="form-label">评论</label>-->
+                        <textarea class="form-control" v-model="text"></textarea>
+                        <button class="btn btn-primary mb-0" @click="saveComment">commit</button>
+                    </div>
                 </div>
             </div>
 
@@ -16,7 +16,9 @@
                 <hr class="bg-dark horizontal my-0 border-3">
                 <div class="card-body">
                     <el-row>
-                        <el-col :span="3" class="avatar"><el-avatar :size="50" :src="circleUrl" /></el-col>
+                        <el-col :span="3" class="avatar">
+                            <el-avatar :size="50" :src="circleUrl" />
+                        </el-col>
                         <el-col :span="21">
                             <div class="com-header">
                                 <router-link :to="{ name: 'profile', params: { uid: comment.uid }}">
@@ -27,23 +29,18 @@
                             </div>
                             <div style="white-space: pre">{{comment.text}}</div>
                             <div v-if="user != null">
-                                <div class="comment-foot" v-if="user.uid === comment.uid || user.role === ROLES.ROLE_ADMIN"><a href="javascript:" @click="removeComment(comment)">删除</a></div>
+                                <div class="comment-foot"
+                                    v-if="user.uid === comment.uid || user.role === ROLES.ROLE_ADMIN"><a
+                                        href="javascript:" @click="removeComment(comment)">删除</a></div>
                             </div>
                         </el-col>
                     </el-row>
                 </div>
             </div>
             <el-row class="page" justify="center">
-                <el-pagination
-                        background
-                        v-model:currentPage="currentPage"
-                        :page-sizes="[10, 20, 50, 100]"
-                        :page-size="pageSize"
-                        layout="prev, pager, next, jumper"
-                        :total="total"
-                        @size-change="handleSizeChange"
-                        @current-change="handleCurrentChange"
-                >
+                <el-pagination background v-model:currentPage="currentPage" :page-sizes="[10, 20, 50, 100]"
+                    :page-size="pageSize" layout="prev, pager, next, jumper" :total="total"
+                    @size-change="handleSizeChange" @current-change="handleCurrentChange">
                 </el-pagination>
             </el-row>
 
@@ -54,7 +51,6 @@
 <script>
     import userhead from '@/assets/img/userhead.png'
     import {ElMessage, ElMessageBox} from "element-plus";
-    import {getMe} from "@/api/user";
     import { ROLES } from '../../utils/config';
 
     export default {
@@ -76,11 +72,13 @@
                 comments: [],
                 text: '',
                 user: {},
-                ROLES
+                ROLES,
+                loading: false
             }
         },
         methods: {
             getCommentByPage() {
+                this.loading = true
                 let id
                 if (this.cid != null) {
                     id = this.cid
@@ -104,9 +102,10 @@
                 }).catch((error) => {
                     console.log(error)
                     this.$emit("load2")
-                })
+                }).finally(() => { this.loading = false })
             },
             saveComment() {
+                this.loading = true
                 let obj
                 if (this.cid != null) {
                     obj = {text: this.text, cid: this.cid}
@@ -128,9 +127,11 @@
                             message: res.data.msg,
                             type: 'warning',
                         })
+                        this.loading = false
                     }
                 }).catch((error) => {
                     console.log(error)
+                    this.loading = false
                 })
             },
             removeComment(comment) {
@@ -151,6 +152,7 @@
                         type: 'error',
                     }
                 ).then(() => {
+                    this.loading = true
                     this.removeFunc(id).then((res) => {
                         if (res.status === 200 && res.data.flag === true) {
                             ElMessage({
@@ -163,22 +165,17 @@
                                 message: res.data.msg,
                                 type: 'warning',
                             })
+                            this.loading = false
                         }
                     }).catch((error) => {
                         console.log(error)
+                        this.loading = false
                     })
                 })
             },
             getMe() {
-                getMe().then((res) => {
-                    if (res.status === 200 && res.data.flag === true) {
-                        this.user = res.data.data
-                    }
-                    this.$emit("load3")
-                }).catch((error) => {
-                    console.log(error)
-                    this.$emit("load3")
-                })
+                this.user = this.$store.state.userStore.user
+                this.$emit("load3")
             },
             handleCurrentChange(currentP) {
                 this.currentPage = currentP

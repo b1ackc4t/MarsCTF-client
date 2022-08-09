@@ -13,7 +13,6 @@
 
     import UserInfo from "@/components/profile/UserInfo";
     import TotalPanel from "@/components/profile/TotalPanel";
-    import {getMe} from "@/api/user";
     export default {
         name: "MyProfile",
         components: {TotalPanel, UserInfo},
@@ -33,15 +32,8 @@
             }
         },
         mounted() {
-            getMe().then((res) => {
-                if (res.status === 200 && res.data.flag === true) {
-                    this.user = res.data.data
-                }
-                this.loads[0] = false
-            }).catch((error) => {
-                console.log(error)
-                this.loads[0] = false
-            })
+            this.user = this.$store.state.userStore.user
+            this.loads[0] = false
         }
     }
 </script>

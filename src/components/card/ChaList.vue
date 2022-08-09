@@ -77,6 +77,7 @@
         },
         methods: {
             getChallengePage() {
+                this.loads[1] = true
                 if (this.currentType == null || this.currentType === "0") {
                     getAllChallengeByPageForAll(this.pageSize, this.currentPage).then((res) => {
                         if (res.status === 200 && res.data.flag === true) {
@@ -119,6 +120,7 @@
                 this.getChallengePage()
             },
             getTags() {
+                this.loads[0] = true
                 if (this.currentType != null && this.currentType !== "0") {
                     getChaTagsByType(this.currentType).then((res) => {
                         if (res.status === 200 && res.data.flag === true) {
@@ -160,6 +162,7 @@
 
             },
             getChallengeByTag() {
+                this.loads[1] = true
                 getChallengeByTag(this.pageSize, this.currentPage, this.currentTag).then((res) => {
                     if (res.status === 200 && res.data.flag === true) {
                         this.total = res.data.data.total

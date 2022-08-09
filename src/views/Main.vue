@@ -80,6 +80,7 @@
         },
         methods: {
             getInfoCount() {
+                this.loads[1] = true
                 getInfoCount().then((res) => {
                     if (res.status === 200 && res.data.flag === true) {
                         this.infoCount = res.data.data
@@ -94,6 +95,7 @@
                 })
             },
             getChaCountByType() {
+                this.loads[0] = true
                 getChaCountByType().then((res) => {
                     if (res.status === 200 && res.data.flag === true) {
                         let chaType = res.data.data

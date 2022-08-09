@@ -46,6 +46,7 @@
         },
         methods: {
             getNoticePage() {
+                this.loads[0] = true
                 getNoticePage(this.pageSize, this.currentPage).then((res) => {
                     if (res.status === 200 && res.data.flag === true) {
                         this.total = res.data.data.total

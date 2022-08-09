@@ -78,6 +78,7 @@
         },
         methods: {
             getChaTags(tag) {
+                this.loads[0] = true
                 getChaTags().then((res) => {
                     if (res.status === 200 && res.data.flag === true) {
                         let tags = res.data.data
@@ -112,6 +113,7 @@
                 })
             },
             getChaTagsByType() {
+                this.loads[0] = true
                 getChaTagsByType(this.currentType).then((res) => {
                     if (res.status === 200 && res.data.flag === true) {
                         let tags = res.data.data
@@ -140,6 +142,7 @@
                 })
             },
             getLearningByPageForUser() {
+                this.loads[1] = true
                 getLearningByPageForUser(this.pageSize, this.currentPage).then((res) => {
                     if (res.status === 200 && res.data.flag === true) {
                         this.total = res.data.data.total
@@ -156,6 +159,7 @@
                 })
             },
             getLearningByTypePageForUser() {
+                this.loads[1] = true
                 getLearningByTypePageForUser(this.pageSize, this.currentPage, this.currentType).then((res) => {
                     if (res.status === 200 && res.data.flag === true) {
                         this.total = res.data.data.total
@@ -172,6 +176,7 @@
                 })
             },
             getLearningByTagPageForUser() {
+                this.loads[1] = true
                 getLearningByTagPageForUser(this.pageSize, this.currentPage, this.currentTag).then((res) => {
                     if (res.status === 200 && res.data.flag === true) {
                         this.total = res.data.data.total
