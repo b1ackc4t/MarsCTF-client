@@ -1,7 +1,8 @@
-// const CompressionWebpackPlugin = require('compression-webpack-plugin')
-// const productionGzipExtensions = ['js', 'css']
+const CompressionPlugin = require("compression-webpack-plugin")
 const isDev = process.env.NODE_ENV === 'development';
-const timeStamp = new Date().getTime();
+const AutoImport = require('unplugin-auto-import/webpack')
+const Components = require('unplugin-vue-components/webpack')
+const { ElementPlusResolver } = require('unplugin-vue-components/resolvers')
 module.exports = {
     outputDir: "E:\\desktop\\marsctf-docker\\nginx\\html",
     devServer: {
@@ -37,24 +38,6 @@ module.exports = {
                 args[0].cdn = cdn
                 return args
             })
-            // config.plugin('compressionPlugin').use(new CompressionWebpackPlugin({
-            //     filename: '[path].gz[query]',
-            //     algorithm: 'gzip',
-            //     test: new RegExp(
-            //         '\\.(' + productionGzipExtensions.join('|') + ')$'
-            //     ),
-            //     threshold: 10240, // 只有大小大于该值的资源会被处理 10240
-            //     minRatio: 0.8, // 只有压缩率小于这个值的资源才会被处理
-            //     deleteOriginalAssets: false // 删除原文件
-            // }))
-            // config.plugin('compressionPlugin').use(
-            //     new CompressionWebpackPlugin({
-            //         test: /\.(js|css|html)$/,// 匹配文件名
-            //         algorithm: 'gzip',
-            //         threshold: 10240,
-            //         minRatio: 0.8, // 只有压缩率小于这个值的资源才会被处理
-            //     })
-            // );
         } else {
             const cdn = {
                 css: [],
@@ -69,15 +52,20 @@ module.exports = {
 
     },
     configureWebpack: {
-        // output: {
-        //     // 把应用打包成umd库格式
-        //     library:'myLibrary',
-        //     // 输出重构  打包编译后的文件名称  【模块名称.时间戳】
-        //     filename: `[name].${timeStamp}.js`,
-        //     libraryTarget:'umd',
-        //     globalObject:'this',
-        // },
         devtool: 'source-map',
+        plugins: [
+            AutoImport({
+                resolvers: [ElementPlusResolver()],
+            }),
+            Components({
+                resolvers: [ElementPlusResolver()],
+            }),
+            new CompressionPlugin({
+                test: /\.(js|css)(\?.*)?$/i,//需要压缩的文件正则
+                threshold: 10240,//文件大小大于这个值时启用压缩
+                deleteOriginalAssets: false//压缩后保留原文件
+            })
+        ],
     }
 
 }
