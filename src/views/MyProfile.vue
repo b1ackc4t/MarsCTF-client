@@ -10,7 +10,7 @@
 </template>
 
 <script>
-
+    import types from "../store/types"
     import UserInfo from "@/components/profile/UserInfo";
     import TotalPanel from "@/components/profile/TotalPanel";
     export default {
@@ -32,8 +32,11 @@
             }
         },
         mounted() {
-            this.user = this.$store.state.userStore.user
-            this.loads[0] = false
+            this.$store.dispatch(types.GET_USER_INFO).then(() => {
+                this.user = this.$store.state.userStore.user
+            }).catch((error) => {
+                console.log(error)
+            }).finally(() => { this.loads[0] = false })
         }
     }
 </script>

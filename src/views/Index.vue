@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Navbar :user="user"></Navbar>
+        <Navbar></Navbar>
         <main style="margin-top: 4rem">
             <div class="container">
                 <router-view :user="user"></router-view>

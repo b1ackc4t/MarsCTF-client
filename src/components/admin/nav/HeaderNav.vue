@@ -9,9 +9,10 @@
         <div class="right-info">
             <el-dropdown>
                 <el-button type="primary" :icon="Avatar">
-<!--                    {{username}}-->
-                    {{user.uname}}
-                    <el-icon class="el-icon--right"><arrow-down /></el-icon>
+                    {{ this.$store.state.userStore.user.uname}}
+                    <el-icon class="el-icon--right">
+                        <arrow-down />
+                    </el-icon>
                 </el-button>
                 <template #dropdown>
                     <el-dropdown-menu>
@@ -36,9 +37,6 @@
         name: "HeaderNav",
         components: {
             ArrowDown
-        },
-        props: {
-            user: Object
         },
         data() {
             return {

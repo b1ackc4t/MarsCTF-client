@@ -154,7 +154,7 @@
                                             d="M288 320a224 224 0 1 0 448 0 224 224 0 1 0-448 0zm544 608H160a32 32 0 0 1-32-32v-96a160 160 0 0 1 160-160h448a160 160 0 0 1 160 160v96a32 32 0 0 1-32 32z">
                                         </path>
                                     </svg>
-                                    {{username}}
+                                    {{ this.$store.state.userStore.user.uname}}
                                 </a></router-link>
                         </li>
                         <li class="nav-item" v-if="checkUser">
@@ -325,11 +325,9 @@
                 checkUser: false,
                 checkAdmin: false,
                 msg: "",
-                remember: true
+                remember: true,
+                user: null
             }
-        },
-        props: {
-            user: Object
         },
         methods: {
             gotoChallenge() {
@@ -418,6 +416,9 @@
                     }
                 }
             }
+        },
+        mounted() {
+            this.user = this.$store.state.userStore.user
         }
     }
 </script>
