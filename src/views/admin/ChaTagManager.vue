@@ -47,7 +47,7 @@
     </el-row>
 
     <el-row>
-        <el-table :data="tagsData" style="width: 100%" stripe>
+        <el-table :data="tagsData" style="width: 100%" stripe v-loading="loading">
             <el-table-column prop="tgid" label="ID" sortable/>
             <el-table-column prop="tgname" label="名称" />
             <el-table-column prop="tname" label="类型" />
@@ -142,22 +142,30 @@
                         value: 'tname',
                         label: '类型'
                     },
-                ]
+                ],
+                loading: false,
+                key: "",
+                value: ""
             }
         },
         methods: {
             searchTagPage(key, value) {
+                this.loading = true
+                this.key = key
+                this.value = value
                 searchTagPage(key, value, this.pageSize, this.currentPage).then((res) => {
                     if (res.status === 200 && res.data.flag === true) {
                         this.total = res.data.data.total
                         this.currentPage = res.data.data.pageNum
                         this.tagsData = res.data.data.list
                     }
+                    this.loading = false
                 }).catch((error) => {
                     ElMessage({
                         message: error,
                         type: 'error',
                     })
+                    this.loading = false
                 })
             },
             openSaveDialog() {
@@ -166,20 +174,24 @@
                 this.dialogVisible = true
             },
             getChaTagPage() {
+                this.loading = true
                 getAllChaTagByPageForAdmin(this.pageSize, this.currentPage).then((res) => {
                     if (res.status === 200 && res.data.flag === true) {
                         this.total = res.data.data.total
                         this.currentPage = res.data.data.pageNum
                         this.tagsData = res.data.data.list
                     }
+                    this.loading = false
                 }).catch((error) => {
                     ElMessage({
                         message: error,
                         type: 'error',
                     })
+                    this.loading = false
                 })
             },
             getAllTypeSubmit() {
+                this.loading = true
                 getAllType().then((res) => {
                     if (res.status === 200 && res.data.flag === true) {
                         for (let item in res.data.data) {
@@ -189,6 +201,8 @@
                             })
                         }
                     }
+                }).finally(() => {
+                    this.loading = false
                 })
             },
             flushTag() {
@@ -200,6 +214,7 @@
             tagSubmit() {
                 this.$refs.dialogForm.validate((vRes) => {
                     if (vRes) {
+                        this.loading = true
                         if (this.dialogStatus === 'save') {
                             saveChaTag(this.newTag).then((res) => {
                                 if (res.status === 200 && res.data.flag === true) {
@@ -215,6 +230,7 @@
                                         type: 'warning',
                                     })
                                     this.flushTag()
+                                    this.loading = false
                                 }
                             }).catch((error) => {
                                 ElMessage({
@@ -222,6 +238,7 @@
                                     type: 'error',
                                 })
                                 this.flushTag()
+                                this.loading = false
                             })
                         } else if (this.dialogStatus === 'update') {
                             updateChaTag(this.newTag).then((res) => {
@@ -238,8 +255,9 @@
                                         type: 'warning',
                                     })
                                     this.flushTag()
+                                    this.loading = false
                                 }
-                            })
+                            }).catch(() => { this.loading = false})
                         }
                         this.dialogVisible = false
                     }
@@ -255,6 +273,7 @@
                         type: 'warning',
                     }
                 ).then(() => {
+                    this.loading = true
                     removeChaTag(tag).then((res) => {
                         if (res.status === 200 && res.data.flag === true) {
                             ElMessage({
@@ -267,8 +286,10 @@
                                 message: res.data.msg,
                                 type: 'warning',
                             })
+                            this.loading = false
                         }
                     }).catch((error) => {
+                        this.loading = false
                         console.log(error)
                     })
                 })
@@ -280,11 +301,20 @@
             },
             handleCurrentChange(currentP) {
                 this.currentPage = currentP
-                this.getChaTagPage()
+                if (this.value && this.key) {
+                    this.searchTagPage(this.key, this.value)
+                } else {
+                    this.getChaTagPage()
+                }
+                
             },
             handleSizeChange(currentS) {
                 this.pageSize = currentS
-                this.getChaTagPage()
+                if (this.value && this.key) {
+                    this.searchTagPage(this.key, this.value)
+                } else {
+                    this.getChaTagPage()
+                }
             }
         },
         mounted() {

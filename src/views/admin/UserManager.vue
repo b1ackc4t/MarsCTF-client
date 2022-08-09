@@ -7,24 +7,15 @@
             </el-form-item>
         </el-form>
 
-        <el-dialog
-                v-model="dialogVisible"
-                :title="dialogTitles[dialogStatus]"
-                width="30%"
-                custom-class="addDialog"
-                destroy-on-close
-        >
-            <el-form
-                    label-width="100px"
-                    :rules="rules"
-                    :model="newUser"
-                    ref="dialogForm"
-            >
+        <el-dialog v-model="dialogVisible" :title="dialogTitles[dialogStatus]" width="30%" custom-class="addDialog"
+            destroy-on-close>
+            <el-form label-width="100px" :rules="rules" :model="newUser" ref="dialogForm">
                 <el-form-item label="用户名" prop="uname">
-                    <el-input v-model="newUser.uname" ></el-input>
+                    <el-input v-model="newUser.uname"></el-input>
                 </el-form-item>
                 <el-form-item label="密码" prop="upassword">
-                    <el-input v-model="newUser.upassword" :placeholder="dialogStatus === 'update' ? '若不修改密码请置空':''"></el-input>
+                    <el-input v-model="newUser.upassword" :placeholder="dialogStatus === 'update' ? '若不修改密码请置空':''">
+                    </el-input>
                 </el-form-item>
                 <el-form-item label="性别" class="text-start">
                     <el-radio :label="false" size="large" v-model="newUser.sex">男</el-radio>
@@ -32,12 +23,7 @@
                 </el-form-item>
                 <el-form-item label="角色/权限" class="text-start">
                     <el-select class="m-2" placeholder="role" size="large" v-model="newUser.role">
-                        <el-option
-                            v-for="r in roles"
-                            :label="r.label"
-                            :value="r.value"
-                            :key="r.value"
-                        >
+                        <el-option v-for="r in roles" :label="r.label" :value="r.value" :key="r.value">
                         </el-option>
                     </el-select>
                 </el-form-item>
@@ -51,49 +37,38 @@
                     </el-checkbox-group>
                 </el-form-item>
                 <el-form-item label="邮箱">
-                    <el-input v-model="newUser.email" ></el-input>
+                    <el-input v-model="newUser.email"></el-input>
                 </el-form-item>
                 <el-form-item label="学校/单位">
-                    <el-input v-model="newUser.unit" ></el-input>
+                    <el-input v-model="newUser.unit"></el-input>
                 </el-form-item>
                 <el-form-item label="签名">
-                    <el-input v-model="newUser.sign" ></el-input>
+                    <el-input v-model="newUser.sign"></el-input>
                 </el-form-item>
             </el-form>
             <template #footer>
-              <span class="dialog-footer">
-                <el-button @click="dialogVisible = false">Cancel</el-button>
-                <el-button type="primary" @click="userSubmit"
-                >Confirm</el-button
-                >
-              </span>
+                <span class="dialog-footer">
+                    <el-button @click="dialogVisible = false">Cancel</el-button>
+                    <el-button type="primary" @click="userSubmit">Confirm</el-button>
+                </span>
             </template>
         </el-dialog>
 
     </el-row>
 
     <el-row>
-        <el-table :data="usersData" style="width: 100%" stripe>
-            <el-table-column prop="uid" label="ID" sortable/>
+        <el-table :data="usersData" style="width: 100%" stripe v-loading="loading">
+            <el-table-column prop="uid" label="ID" sortable />
             <el-table-column prop="uname" label="用户名" />
             <el-table-column prop="skill" label="技能" />
             <el-table-column prop="unit" label="学校/单位" />
             <el-table-column prop="role" label="角色" />
-            <el-table-column
-                    label="操作"
-                    align="center"
-                    width="230"
-                    class-name="small-padding fixed-width"
-            >
+            <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
                 <template #default="{row}">
                     <el-button type="success" size="mini" @click="openUpdateDialog(row)">
                         Edit
                     </el-button>
-                    <el-button
-                            size="mini"
-                            type="danger"
-                            @click="removeUserSubmit(row)"
-                    >
+                    <el-button size="mini" type="danger" @click="removeUserSubmit(row)">
                         Delete
                     </el-button>
                 </template>
@@ -101,16 +76,9 @@
         </el-table>
     </el-row>
     <el-row class="mt-3">
-        <el-pagination
-                background
-                v-model:currentPage="currentPage"
-                :page-sizes="[10, 20, 50, 100]"
-                :page-size="pageSize"
-                layout="total, sizes, prev, pager, next, jumper"
-                :total="total"
-                @size-change="handleSizeChange"
-                @current-change="handleCurrentChange"
-        >
+        <el-pagination background v-model:currentPage="currentPage" :page-sizes="[10, 20, 50, 100]"
+            :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total"
+            @size-change="handleSizeChange" @current-change="handleCurrentChange">
         </el-pagination>
     </el-row>
 
@@ -183,18 +151,26 @@
                         value: 'role',
                         label: '角色'
                     }
-                ]
+                ],
+                loading: false,
+                key: "",
+                value: ""
             }
         },
         methods: {
             searchUserPage(key, value) {
+                this.loading = true
+                this.key = key
+                this.value = value
                 searchUserPage(key, value, this.pageSize, this.currentPage).then((res) => {
                     if (res.status === 200 && res.data.flag === true) {
                         this.total = res.data.data.total
                         this.currentPage = res.data.data.pageNum
                         this.usersData = res.data.data.list
                     }
+                    this.loading = false
                 }).catch((error) => {
+                    this.loading = false
                     console.log(error)
                 })
             },
@@ -250,7 +226,7 @@
                 }
                 this.dialogStatus = 'update'
                 this.dialogVisible = true
-                this.newUser = user
+                this.newUser = JSON.parse(JSON.stringify(user))
                 if (this.newUser.skill != null) {
                     let skill = this.newUser.skill + ''
                     this.newUser.skill = skill.split(sep)
@@ -274,6 +250,7 @@
             userSubmit() {
                 this.$refs.dialogForm.validate((vRes) => {
                     if (vRes) {
+                        this.loading = true
                         this.newUser.skill = this.newUser.skill.join(sep)
                         if (this.dialogStatus === 'save') {
                             saveUser(this.newUser).then((res) => {
@@ -287,12 +264,14 @@
                                     this.flushNewUser()
                                 } else {
                                     ElMessage({
-                                        message: '操作失败，请更换用户名重试',
+                                        message: res.data.msg,
                                         type: 'warning',
                                     })
                                     this.flushNewUser()
                                 }
+                                this.loading = false
                             }).catch((error) => {
+                                this.loading = false
                                 console.log(error)
                                 this.flushNewUser()
                             })
@@ -308,12 +287,14 @@
                                     this.flushNewUser()
                                 } else {
                                     ElMessage({
-                                        message: '操作失败，可能是用户名重复',
+                                        message: res.data.msg,
                                         type: 'warning',
                                     })
                                     this.flushNewUser()
                                 }
+                                this.loading = false
                             }).catch((error) => {
+                                this.loading = false
                                 console.log(error)
                                 this.flushNewUser()
                             })
@@ -333,6 +314,7 @@
                         type: 'warning',
                     }
                 ).then(() => {
+                    this.loading = true
                     removeUser(user).then((res) => {
                         if (res.status === 200 && res.data.flag === true) {
                             ElMessage({
@@ -346,30 +328,43 @@
                                 message: '操作失败，用户id不存在',
                                 type: 'warning',
                             })
+                            this.loading = false
                         }
                     }).catch((error) => {
                         console.log(error)
+                        this.loading = false
                     })
                 })
             },
             getUserPage() {
+                this.loading = true
                 getAllUserByPage(this.pageSize, this.currentPage).then((res) => {
                     if (res.status === 200 && res.data.flag === true) {
                         this.total = res.data.data.total
                         this.currentPage = res.data.data.pageNum
                         this.usersData = res.data.data.list
                     }
+                    this.loading = false
                 }).catch((error) => {
+                    this.loading = false
                     console.log(error)
                 })
             },
             handleCurrentChange(currentP) {
                 this.currentPage = currentP
-                this.getUserPage()
+                if (this.value && this.key) {
+                    this.searchUserPage(this.key, this.value)
+                } else {
+                    this.getUserPage()
+                }
             },
             handleSizeChange(currentS) {
                 this.pageSize = currentS
-                this.getUserPage()
+                if (this.value && this.key) {
+                    this.searchUserPage(this.key, this.value)
+                } else {
+                    this.getUserPage()
+                }
             }
 
         },

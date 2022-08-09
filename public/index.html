@@ -21,9 +21,9 @@
     <% for(var js of htmlWebpackPlugin.options.cdn.js) { %>
     <script  src="<%=js%>" ></script>
     <% } %>
-    <script src="./static/js/bootstrap.min.js"></script>
-    <script src="./static/js/material-dashboard.min.js"></script>
-    <script src="./static/js/echarts.min.js"></script>
+    <script src="<%= BASE_URL %>static/js/bootstrap.min.js"></script>
+    <script src="<%= BASE_URL %>static/js/material-dashboard.min.js"></script>
+    <script src="<%= BASE_URL %>static/js/echarts.min.js"></script>
 
 
 

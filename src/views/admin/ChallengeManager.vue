@@ -1,5 +1,5 @@
 <template>
-    <div v-loading.fullscreen.lock="loading">
+    <div>
         <el-row>
             <el-form :inline="true" class="demo-form-inline">
                 <SearchItem :options="options" @searchHandle="searchChallengePage"></SearchItem>
@@ -13,41 +13,28 @@
         </el-row>
 
         <el-row>
-            <el-table :data="challengesData" style="width: 100%" stripe>
-                <el-table-column prop="cid" label="ID" sortable/>
+            <el-table :data="challengesData" style="width: 100%" stripe v-loading="loading">
+                <el-table-column prop="cid" label="ID" sortable />
                 <el-table-column prop="cname" label="名称" />
                 <el-table-column prop="tname" label="类型" />
                 <el-table-column label="是否公开">
                     <template #default="{row}">
-                        <el-tag
-                                :type="row.exposed?'success':'danger'"
-                        >{{row.exposed}}
+                        <el-tag :type="row.exposed?'success':'danger'">{{row.exposed}}
                         </el-tag>
                     </template>
                 </el-table-column>
                 <el-table-column label="提示">
                     <template #default="{row}">
-                        <el-tag
-                                :type="getStatusStyle(row)"
-                        >{{getStatusText(row)}}
+                        <el-tag :type="getStatusStyle(row)">{{getStatusText(row)}}
                         </el-tag>
                     </template>
                 </el-table-column>
-                <el-table-column
-                        label="操作"
-                        align="center"
-                        width="230"
-                        class-name="small-padding fixed-width"
-                >
+                <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
                     <template #default="{row}">
                         <el-button type="success" size="mini" @click="editChallengeSubmit(row)">
                             Edit
                         </el-button>
-                        <el-button
-                                size="mini"
-                                type="danger"
-                                @click="removeChallengeSubmit(row)"
-                        >
+                        <el-button size="mini" type="danger" @click="removeChallengeSubmit(row)">
                             Delete
                         </el-button>
                     </template>
@@ -55,16 +42,9 @@
             </el-table>
         </el-row>
         <el-row class="mt-3">
-            <el-pagination
-                    background
-                    v-model:currentPage="currentPage"
-                    :page-sizes="[10, 20, 50, 100]"
-                    :page-size="pageSize"
-                    layout="total, sizes, prev, pager, next, jumper"
-                    :total="total"
-                    @size-change="handleSizeChange"
-                    @current-change="handleCurrentChange"
-            >
+            <el-pagination background v-model:currentPage="currentPage" :page-sizes="[10, 20, 50, 100]"
+                :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total"
+                @size-change="handleSizeChange" @current-change="handleCurrentChange">
             </el-pagination>
         </el-row>
     </div>
@@ -104,22 +84,30 @@
                         label: '出题者'
                     }
                 ],
-                loading: false
+                loading: false,
+                key: "",
+                value: ""
             }
         },
         methods: {
             searchChallengePage(key, value) {
+                this.loading = true
+                this.key = key
+                this.value = value
                 searchChallengePage(key, value, this.pageSize, this.currentPage).then((res) => {
                     if (res.status === 200 && res.data.flag === true) {
                         this.total = res.data.data.total
                         this.currentPage = res.data.data.pageNum
                         this.challengesData = res.data.data.list
                     }
+                    this.loading = false
                 }).catch((error) => {
+                    this.loading = false
                     console.log(error)
                 })
             },
             getChallengePage() {
+                this.loading = true
                 getAllChallengeByPageForAdmin(this.pageSize, this.currentPage).then((res) => {
                     if (res.status === 200 && res.data.flag === true) {
                         this.total = res.data.data.total
@@ -128,7 +116,9 @@
 
 
                     }
+                    this.loading = false
                 }).catch((error) => {
+                    this.loading = false
                     console.log(error)
                 })
             },
@@ -145,6 +135,7 @@
                         type: 'error',
                     }
                 ).then(() => {
+                    this.loading = true
                     removeChallenge(challenge).then((res) => {
                         if (res.status === 200 && res.data.flag === true) {
                             ElMessage({
@@ -158,6 +149,7 @@
                                 message: res.data.msg,
                                 type: 'warning',
                             })
+                            this.loading = false
                         }
                     }).catch((error) => {
                         console.log(error)
@@ -165,16 +157,26 @@
                             message: error,
                             type: 'error',
                         })
+                        this.loading = false
                     })
                 })
             },
             handleCurrentChange(currentP) {
                 this.currentPage = currentP
-                this.getChallengePage()
+                if (this.value && this.key) {
+                    this.searchChallengePage(this.key, this.value)
+                } else {
+                    this.getChallengePage()
+                }
+                
             },
             handleSizeChange(currentS) {
                 this.pageSize = currentS
-                this.getChallengePage()
+                if (this.value && this.key) {
+                    this.searchChallengePage(this.key, this.value)
+                } else {
+                    this.getChallengePage()
+                }
             },
             getStatusStyle(row) {
                 if (row.isDynamic) {

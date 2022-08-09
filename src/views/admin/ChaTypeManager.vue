@@ -36,7 +36,7 @@
     </el-row>
 
     <el-row>
-        <el-table :data="typesData" style="width: 100%" stripe>
+        <el-table :data="typesData" style="width: 100%" stripe v-loading="loading">
             <el-table-column prop="tid" label="ID" sortable/>
             <el-table-column prop="tname" label="名称" />
             <el-table-column prop="chaNum" label="题目总数" />
@@ -124,11 +124,17 @@
                         value: 'tname',
                         label: '类型'
                     },
-                ]
+                ],
+                loading: false,
+                key: "",
+                value: ""
             }
         },
         methods: {
             searchTypePage(key, value) {
+                this.loading = true
+                this.key = key
+                this.value = value
                 searchTypePage(key, value, this.pageSize, this.currentPage).then((res) => {
                     if (res.status === 200 && res.data.flag === true) {
                         this.total = res.data.data.total
@@ -140,6 +146,8 @@
                         message: error,
                         type: 'error',
                     })
+                }).finally(() => {
+                    this.loading = false
                 })
             },
             openSaveDialog() {
@@ -148,6 +156,7 @@
                 this.dialogVisible = true
             },
             getChaTypePage() {
+                this.loading = true
                 getAllTypeByPageForAdmin(this.pageSize, this.currentPage).then((res) => {
                     if (res.status === 200 && res.data.flag === true) {
                         this.total = res.data.data.total
@@ -159,7 +168,7 @@
                         message: error,
                         type: 'error',
                     })
-                })
+                }).finally(() => { this.loading = false})
             },
             flushType() {
                 this.newType = {
@@ -169,6 +178,7 @@
             typeSubmit() {
                 this.$refs.dialogForm.validate((vRes) => {
                     if (vRes) {
+                        this.loading = true
                         if (this.dialogStatus === 'save') {
                             saveType(this.newType).then((res) => {
                                 if (res.status === 200 && res.data.flag === true) {
@@ -184,6 +194,7 @@
                                         type: 'warning',
                                     })
                                     this.flushType()
+                                    this.loading = false
                                 }
                             }).catch((error) => {
                                 ElMessage({
@@ -191,6 +202,7 @@
                                     type: 'error',
                                 })
                                 this.flushType()
+                                this.loading = false
                             })
                         } else if (this.dialogStatus === 'update') {
                             updateType(this.newType).then((res) => {
@@ -207,8 +219,9 @@
                                         type: 'warning',
                                     })
                                     this.flushType()
+                                    this.loading = false
                                 }
-                            })
+                            }).catch(() => { this.loading = false})
                         }
                         this.dialogVisible = false
                     }
@@ -224,6 +237,7 @@
                         type: 'error',
                     }
                 ).then(() => {
+                    this.loading = true
                     removeType(type).then((res) => {
                         if (res.status === 200 && res.data.flag === true) {
                             ElMessage({
@@ -236,9 +250,11 @@
                                 message: res.data.msg,
                                 type: 'warning',
                             })
+                            this.loading = false
                         }
                     }).catch((error) => {
                         console.log(error)
+                        this.loading = false
                     })
                 })
             },
@@ -249,11 +265,19 @@
             },
             handleCurrentChange(currentP) {
                 this.currentPage = currentP
-                this.getChaTypePage()
+                if (this.value && this.key) {
+                    this.searchTypePage(this.key, this.value)
+                } else {
+                    this.getChaTypePage()
+                }
             },
             handleSizeChange(currentS) {
                 this.pageSize = currentS
-                this.getChaTypePage()
+                if (this.value && this.key) {
+                    this.searchTypePage(this.key, this.value)
+                } else {
+                    this.getChaTypePage()
+                }
             }
         },
         mounted() {

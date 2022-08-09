@@ -1,15 +1,9 @@
 <template>
-    <BodyCard>
+    <BodyCard v-loading="loading">
         <el-form ref="formRef" :model="learnInfo" label-width="100px" class="text-start" label-position="left">
             <el-row class="mb-3">
-                <el-input
-                        v-model="learnInfo.title"
-                        minlength="4"
-                        maxlength="50"
-                        placeholder="请输入文章标题"
-                        show-word-limit
-                        type="text"
-                >
+                <el-input v-model="learnInfo.title" minlength="4" maxlength="50" placeholder="请输入文章标题" show-word-limit
+                    type="text">
                 </el-input>
             </el-row>
             <el-row class="mb-3 text-start edit-padding">
@@ -17,27 +11,16 @@
             </el-row>
             <el-form-item label="分类" prop="tid">
                 <el-select v-model="learnInfo.tid" placeholder="Select">
-                    <el-option
-                            v-for="item in types"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value"
-                    >
+                    <el-option v-for="item in types" :key="item.value" :label="item.label" :value="item.value">
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="技术标签" >
+            <el-form-item label="技术标签">
                 <TagSelect v-model="learnInfo.tgids"></TagSelect>
             </el-form-item>
             <el-form-item label="添加实践">
-                <el-switch
-                        v-model="learnInfo.hasTrain"
-                        inline-prompt
-                        active-color="#13ce66"
-                        inactive-color="#ff4949"
-                        active-text="是"
-                        inactive-text="否"
-                />
+                <el-switch v-model="learnInfo.hasTrain" inline-prompt active-color="#13ce66" inactive-color="#ff4949"
+                    active-text="是" inactive-text="否" />
             </el-form-item>
             <el-form-item label="选择题目" v-if="learnInfo.hasTrain">
                 <ChallengeSelect v-model="learnInfo.cids"></ChallengeSelect>
@@ -76,11 +59,13 @@
                     cids: []
                 },
                 types: [],
-                uploadImageForLearn
+                uploadImageForLearn,
+                loading: false
             }
         },
         methods: {
             getTypes() {
+                this.loading = true
                 getAllType().then((res) => {
                     if (res.status === 200 && res.data.flag === true) {
                         let types = res.data.data
@@ -101,9 +86,10 @@
                         message: error,
                         type: 'error',
                     })
-                })
+                }).finally(() => { this.loading = false })
             },
             saveLearning() {
+                this.loading = true
                 saveLearning(this.learnInfo).then((res) => {
                     if (res.status === 200 && res.data.flag === true) {
                         ElMessage({
@@ -122,7 +108,7 @@
                         message: error,
                         type: 'error',
                     })
-                })
+                }).finally(() => { this.loading = false })
             }
 
         },

@@ -1,12 +1,6 @@
 <template>
-    <div>
-        <el-form
-                label-width="120px"
-                :rules="rules"
-                class="text-start"
-                :model="currentChallenge"
-                ref="myForm"
-        >
+    <div v-loading="loading">
+        <el-form label-width="120px" :rules="rules" class="text-start" :model="currentChallenge" ref="myForm">
             <el-row>
                 <el-col :span="18">
                     <el-form-item label="题目名称" prop="cname">
@@ -21,13 +15,9 @@
             </el-row>
             <el-row>
                 <el-col :span="24">
-                    <el-form-item label="题目描述" >
-                        <el-input
-                                :autosize="{ minRows: 4, maxRows: 8 }"
-                                type="textarea"
-                                placeholder="Please input"
-                                v-model="currentChallenge.descr"
-                        >
+                    <el-form-item label="题目描述">
+                        <el-input :autosize="{ minRows: 4, maxRows: 8 }" type="textarea" placeholder="Please input"
+                            v-model="currentChallenge.descr">
                         </el-input>
                     </el-form-item>
                 </el-col>
@@ -35,18 +25,13 @@
 
             <el-row>
                 <el-col :span="24">
-                    <el-form-item label="题目附件" >
-                        <el-upload
-                                class="upload-demo"
-                                drag
-                                :action="inject('server') + '/api/admin/uploadCTFFile'"
-                                :with-credentials="true"
-                                :limit="1"
-                                :on-remove="removeFileSubmit"
-                                :on-success="uploadFile"
-                                :on-preview="previewFile"
-                        >
-                            <el-icon class="el-icon--upload"><upload-filled /></el-icon>
+                    <el-form-item label="题目附件">
+                        <el-upload class="upload-demo" drag :action="inject('server') + '/api/admin/uploadCTFFile'"
+                            :with-credentials="true" :limit="1" :on-remove="removeFileSubmit" :on-success="uploadFile"
+                            :on-preview="previewFile">
+                            <el-icon class="el-icon--upload">
+                                <upload-filled />
+                            </el-icon>
                             <div class="el-upload__text">
                                 拖动或点击上传<em>题目附件</em>
                             </div>
@@ -60,40 +45,31 @@
             <el-row>
                 <el-col :span="24">
                     <el-form-item label="动态靶机">
-                        <el-switch
-                                v-model="currentChallenge.isDynamic"
-                                inline-prompt
-                                active-color="#13ce66"
-                                inactive-color="#ff4949"
-                                active-text="是"
-                                inactive-text="否"
-                        />
+                        <el-switch v-model="currentChallenge.isDynamic" inline-prompt active-color="#13ce66"
+                            inactive-color="#ff4949" active-text="是" inactive-text="否" />
                     </el-form-item>
                     <div v-if="currentChallenge.isDynamic">
-                        <el-form-item label="docker镜像名" prop="imageName" >
+                        <el-form-item label="docker镜像名" prop="imageName">
                             <el-input v-model="currentChallenge.imageName"></el-input>
                         </el-form-item>
-                        <el-form-item label="docker端口" prop="srcPort" >
-                            <el-input v-model="currentChallenge.srcPort" oninput="value=value.replace(/[^0-9.]/g,'')"></el-input>
+                        <el-form-item label="docker端口" prop="srcPort">
+                            <el-input v-model="currentChallenge.srcPort" oninput="value=value.replace(/[^0-9.]/g,'')">
+                            </el-input>
                         </el-form-item>
                         <el-form-item label="cpu数量上限" prop="cpuLimit">
-                            <el-input v-model="currentChallenge.cpuLimit"  oninput="value=value.replace(/[^0-9.]/g,'')"  placeholder="0.5" />
+                            <el-input v-model="currentChallenge.cpuLimit" oninput="value=value.replace(/[^0-9.]/g,'')"
+                                placeholder="0.5" />
                         </el-form-item>
                         <el-form-item label="内存数量上限" prop="memLimit">
-                            <el-input v-model="currentChallenge.memLimit"  oninput="value=value.replace(/[^0-9.]/g,'')"  placeholder="128(单位 Mb)" />
+                            <el-input v-model="currentChallenge.memLimit" oninput="value=value.replace(/[^0-9.]/g,'')"
+                                placeholder="128(单位 Mb)" />
                         </el-form-item>
                         <el-form-item label="动态FLAG">
-                            <el-switch
-                                    v-model="currentChallenge.isDynamicFlag"
-                                    inline-prompt
-                                    active-color="#13ce66"
-                                    inactive-color="#ff4949"
-                                    active-text="是"
-                                    inactive-text="否"
-                            />
+                            <el-switch v-model="currentChallenge.isDynamicFlag" inline-prompt active-color="#13ce66"
+                                inactive-color="#ff4949" active-text="是" inactive-text="否" />
                         </el-form-item>
                         <div v-if="currentChallenge.isDynamicFlag">
-                            <el-form-item label="FLAG前缀" prop="flagPrefix" >
+                            <el-form-item label="FLAG前缀" prop="flagPrefix">
                                 <el-input v-model="currentChallenge.flagPrefix"></el-input>
                             </el-form-item>
                         </div>
@@ -113,12 +89,8 @@
                 <el-col :span="16">
                     <el-form-item label="题目分类" prop="tid">
                         <el-select v-model="currentChallenge.tid" placeholder="Select">
-                            <el-option
-                                    v-for="item in challengeTypes"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value"
-                            >
+                            <el-option v-for="item in challengeTypes" :key="item.value" :label="item.label"
+                                :value="item.value">
                             </el-option>
                         </el-select>
                     </el-form-item>
@@ -126,28 +98,17 @@
                 </el-col>
                 <el-col :span="8">
                     <el-form-item label="是否公开" label-width="85px">
-                        <el-switch
-                                v-model="currentChallenge.exposed"
-                                inline-prompt
-                                active-color="#13ce66"
-                                inactive-color="#ff4949"
-                                active-text="是"
-                                inactive-text="否"
-                        />
+                        <el-switch v-model="currentChallenge.exposed" inline-prompt active-color="#13ce66"
+                            inactive-color="#ff4949" active-text="是" inactive-text="否" />
                     </el-form-item>
 
                 </el-col>
             </el-row>
             <el-row>
                 <el-col :span="24">
-                    <el-form-item label="技术标签" >
-                        <el-cascader-panel
-                                v-model="currentChallenge.tags"
-                                :options="tagOptions"
-                                class="tag-panel"
-                                :props="props"
-                                :show-all-levels="false"
-                        />
+                    <el-form-item label="技术标签">
+                        <el-cascader-panel v-model="currentChallenge.tags" :options="tagOptions" class="tag-panel"
+                            :props="props" :show-all-levels="false" />
                     </el-form-item>
 
                 </el-col>
@@ -155,9 +116,7 @@
 
             <el-row class="foot">
                 <el-button @click="$router.go(-1)">Back</el-button>
-                <el-button type="primary" @click="challengeSubmit"
-                >Confirm</el-button
-                >
+                <el-button type="primary" @click="challengeSubmit">Confirm</el-button>
             </el-row>
         </el-form>
     </div>
@@ -262,6 +221,7 @@
                     ],
                 },
                 tagOptions: [],
+                loading: false
             }
         },
         methods: {
@@ -273,6 +233,7 @@
                 })
             },
             saveChallenge() {
+                this.loading = true
                 let tags = this.currentChallenge.tags
                 for (let index1 in tags) {
                     tags[index1] = tags[index1][tags[index1].length - 1]
@@ -296,7 +257,7 @@
                         message: error,
                         type: 'error',
                     })
-                })
+                }).finally(() => { this.loading = false })
             },
             removeFileSubmit() {
                 // 删除服务端文件后把文件id置为0
@@ -331,6 +292,7 @@
              * 填充标签选项
              */
             setTagOptions() {
+                this.loading = true
                 getChaTagAndTypeForAdmin().then((res) => {
                     if (res.status === 200 && res.data.flag === true) {
                         let tagTypes = res.data.data
@@ -352,7 +314,7 @@
                     }
                 }).catch((error) => {
                     console.log(error)
-                })
+                }).finally(() => { this.loading = false })
             },
             /**
              * 校验分值范围
@@ -381,6 +343,7 @@
                 })
             },
             getTypes() {
+                this.loading = true
                 getAllType().then((res) => {
                     if (res.status === 200 && res.data.flag === true) {
                         let types = res.data.data
@@ -401,7 +364,7 @@
                         message: error,
                         type: 'error',
                     })
-                })
+                }).finally(() => { this.loading = false })
             },
             toFirstUpper(value) {
                 return value.slice(0, 1).toUpperCase() + value.slice(1)

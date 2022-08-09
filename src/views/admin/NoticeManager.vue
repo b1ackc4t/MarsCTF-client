@@ -11,26 +11,17 @@
     </el-row>
 
     <el-row>
-        <el-table :data="notices" style="width: 100%" stripe>
-            <el-table-column prop="nid" label="ID" sortable/>
+        <el-table :data="notices" style="width: 100%" stripe v-loading="loading">
+            <el-table-column prop="nid" label="ID" sortable />
             <el-table-column prop="title" label="标题" />
             <el-table-column prop="uname" label="作者" />
             <el-table-column prop="createTime" label="发表时间" />
-            <el-table-column
-                    label="操作"
-                    align="center"
-                    width="230"
-                    class-name="small-padding fixed-width"
-            >
+            <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
                 <template #default="{row}">
                     <el-button type="success" size="mini" @click="editNotice(row)">
                         编辑
                     </el-button>
-                    <el-button
-                            size="mini"
-                            type="danger"
-                            @click="removeNotice(row)"
-                    >
+                    <el-button size="mini" type="danger" @click="removeNotice(row)">
                         删除
                     </el-button>
                 </template>
@@ -39,16 +30,9 @@
     </el-row>
 
     <el-row class="mt-3">
-        <el-pagination
-                background
-                v-model:currentPage="currentPage"
-                :page-sizes="[10, 20, 50, 100]"
-                :page-size="pageSize"
-                layout="total, sizes, prev, pager, next, jumper"
-                :total="total"
-                @size-change="handleSizeChange"
-                @current-change="handleCurrentChange"
-        >
+        <el-pagination background v-model:currentPage="currentPage" :page-sizes="[10, 20, 50, 100]"
+            :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total"
+            @size-change="handleSizeChange" @current-change="handleCurrentChange">
         </el-pagination>
     </el-row>
 </template>
@@ -86,11 +70,17 @@
                         value: 'uname',
                         label: '作者'
                     },
-                ]
+                ],
+                loading: false,
+                key: "",
+                value: ""
             }
         },
         methods: {
             searchNoticePage(key, value) {
+                this.loading = true
+                this.key = key
+                this.value = value
                 searchNoticePage(key, value, this.pageSize, this.currentPage).then((res) => {
                     if (res.status === 200 && res.data.flag === true) {
                         this.total = res.data.data.total
@@ -107,9 +97,10 @@
                         message: error,
                         type: 'error',
                     })
-                })
+                }).finally(() => { this.loading = false })
             },
             getNoticePageForAdmin() {
+                this.loading = true
                 getNoticePageForAdmin(this.pageSize, this.currentPage).then((res) => {
                     if (res.status === 200 && res.data.flag === true) {
                         this.total = res.data.data.total
@@ -126,7 +117,7 @@
                         message: error,
                         type: 'error',
                     })
-                })
+                }).finally(() => { this.loading = false })
             },
             editNotice(notice) {
                 this.$router.push({
@@ -144,6 +135,7 @@
                         type: 'error',
                     }
                 ).then(() => {
+                    this.loading = true
                     removeNotice(notice).then((res) => {
                         if (res.status === 200 && res.data.flag === true) {
                             ElMessage({
@@ -156,14 +148,33 @@
                                 message: res.data.msg,
                                 type: 'warning',
                             })
+                            this.loading = false
                         }
                     }).catch((error) => {
                         ElMessage({
                             message: error,
                             type: 'error',
                         })
+                        this.loading = false
                     })
                 })
+            },
+            handleCurrentChange(currentP) {
+                this.currentPage = currentP
+                if (this.value && this.key) {
+                    this.searchNoticePage(this.key, this.value)
+                } else {
+                    this.getNoticePageForAdmin()
+                }
+
+            },
+            handleSizeChange(currentS) {
+                this.pageSize = currentS
+                if (this.value && this.key) {
+                    this.searchNoticePage(this.key, this.value)
+                } else {
+                    this.getNoticePageForAdmin()
+                }
             }
 
         },

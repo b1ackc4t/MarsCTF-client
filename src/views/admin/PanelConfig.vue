@@ -1,5 +1,5 @@
 <template>
-    <div v-loading.fullscreen.lock="loading">
+    <div v-loading="loading">
         <div class="formItem mb-3 text-start">
             <el-form
                     label-position="top"
@@ -109,6 +109,7 @@
         },
         methods: {
             getPanelConfig() {
+                this.loading = true
                 getPanelConfig().then((res) => {
                     if (res.status === 200 && res.data.flag === true) {
                         this.config = res.data.data
@@ -124,9 +125,10 @@
                         message: error,
                         type: 'error',
                     })
-                })
+                }).finally(() => { this.loading = false })
             },
             getDefault() {
+                this.loading = true
                 getDefault().then((res) => {
                     if (res.status === 200 && res.data.flag === true) {
                         this.config = res.data.data
@@ -167,7 +169,7 @@
                         type: 'error',
                     })
                     this.loading = false
-                })
+                }).finally(() => { this.loading = false })
             }
         },
         mounted() {

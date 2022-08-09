@@ -1,14 +1,8 @@
 <template>
-    <el-form ref="formRef" :model="notice" label-width="100px">
+    <el-form v-loading="loading" ref="formRef" :model="notice" label-width="100px">
         <el-row class="mb-3">
-            <el-input
-                    v-model="notice.title"
-                    minlength="2"
-                    maxlength="50"
-                    placeholder="请输入公告标题"
-                    show-word-limit
-                    type="text"
-            >
+            <el-input v-model="notice.title" minlength="2" maxlength="50" placeholder="请输入公告标题" show-word-limit
+                type="text">
             </el-input>
         </el-row>
         <el-row class="mb-3 text-start edit-padding">
@@ -39,11 +33,13 @@
         data() {
             return {
                 notice: {},
-                uploadImageForNotice
+                uploadImageForNotice,
+                loading: false
             }
         },
         methods: {
             submitNotice() {
+                this.loading = true
                 this.operaterFunc(this.notice).then((res) => {
                     if (res.status === 200 && res.data.flag === true) {
                         ElMessage({
@@ -62,11 +58,12 @@
                         message: error,
                         type: 'error',
                     })
-                })
+                }).finally(() => { this.loading = false })
             }
         },
         mounted() {
             if (this.nid != null) {
+                this.loading = true
                 getNoticeByIdForAdmin(this.nid).then((res) => {
                     if (res.status === 200 && res.data.flag === true) {
                         this.notice = res.data.data;
@@ -81,7 +78,7 @@
                         message: error,
                         type: 'error',
                     })
-                })
+                }).finally(() => { this.loading = false })
             }
         }
     }
