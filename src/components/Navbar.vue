@@ -383,17 +383,7 @@
                             message: "注册成功",
                             type: 'success',
                         })
-                        this.$store.dispatch(types.LOGIN, {
-                            username: this.newUsername,
-                            password: this.newPassword,
-                            captchaId: this.captchaId,
-                            captcha: this.captcha,
-                            remember: true
-                        }).then(() => {
-                            this.$router.go(0)
-                        }).catch((error) => {
-                            console.log(error)
-                        })
+                        this.$router.go(0)
                     }
                 })
             },
