@@ -104,7 +104,7 @@
                     <ul class="navbar-nav ml-md-auto d-block d-sm-flex d-md-flex">
                         <li class="nav-item" v-if="!checkUser">
                             <a class="nav-link d-flex align-items-center justify-content-center fs-6" href="#"
-                                data-bs-toggle="modal" data-bs-target="#modal-form">
+                                data-bs-toggle="modal" data-bs-target="#modal-form" @click="getCaptchaImage">
                                 <svg class="svg-icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"
                                     data-v-ba633cb8="">
                                     <path fill="currentColor"
@@ -117,7 +117,7 @@
                         <li class="nav-item" v-if="!checkUser">
                             <a class="nav-link d-flex align-items-center justify-content-center fs-6" href="#"
                                 tabindex="-1" aria-disabled="true" data-bs-toggle="modal"
-                                data-bs-target="#exampleModalSignUp">
+                                data-bs-target="#exampleModalSignUp" @click="getCaptchaImage">
                                 <svg class="svg-icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"
                                     data-v-ba633cb8="">
                                     <path fill="currentColor" d="M352 480h320a32 32 0 1 1 0 64H352a32 32 0 0 1 0-64z">
@@ -224,7 +224,8 @@
                                 <p class="mb-4 text-sm mx-auto">
                                     没有账号？
                                     <a href="javascript:;" class="text-info text-gradient font-weight-bold"
-                                        data-bs-toggle="modal" data-bs-target="#exampleModalSignUp">注册</a>
+                                        data-bs-toggle="modal" data-bs-target="#exampleModalSignUp"
+                                        @click="getCaptchaImage">注册</a>
                                 </p>
                             </div>
                         </div>
@@ -284,7 +285,8 @@
                                 <p class="mb-4 mx-auto">
                                     已经有账号？
                                     <a href="javascrpt:;" class="text-primary text-gradient font-weight-bold"
-                                        data-bs-toggle="modal" data-bs-target="#modal-form">登录</a>
+                                        data-bs-toggle="modal" data-bs-target="#modal-form"
+                                        @click="getCaptchaImage">登录</a>
                                 </p>
                             </div>
                         </div>
@@ -374,6 +376,7 @@
                     if (res.data.flag === false) {
                         this.msg = res.data.msg
                         this.checkError2 = true
+                        this.getCaptchaImage()
                     } else {
                         this.checkError2 = false
                         ElMessage({
@@ -383,7 +386,9 @@
                         this.$store.dispatch(types.LOGIN, {
                             username: this.newUsername,
                             password: this.newPassword,
-                            remember: false
+                            captchaId: this.captchaId,
+                            captcha: this.captcha,
+                            remember: true
                         }).then(() => {
                             this.$router.go(0)
                         }).catch((error) => {
@@ -423,9 +428,6 @@
                     }
                 }
             }
-        },
-        mounted() {
-            this.getCaptchaImage()
         }
     }
 </script>
