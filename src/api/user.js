@@ -18,14 +18,15 @@ export function getMe() {
  * @param password
  * @returns {AxiosPromise}
  */
-export function login(username, password, remember) {
+export function login({username, password, captcha, captchaId}) {
     return requests({
         url: '/api/login',
         method: 'post',
         data: qs.stringify({
-            username: username,
-            password: password,
-            'remember-me': remember
+            username,
+            password,
+            captcha,
+            captchaId
         })
     })
 }
@@ -37,14 +38,16 @@ export function login(username, password, remember) {
  * @param newPasswordR
  * @returns {AxiosPromise}
  */
-export function register(newUsername, newPassword, newPasswordR) {
+export function register(newUsername, newPassword, newPasswordR, captcha, captchaId) {
     return requests({
         url: '/api/register',
         method: 'post',
         data: qs.stringify({
             'username': newUsername,
             'password': newPassword,
-            'passwordR': newPasswordR
+            'passwordR': newPasswordR,
+            captcha,
+            captchaId
         })
     })
 }

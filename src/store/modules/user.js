@@ -10,12 +10,9 @@ const userStore = {
     }),
     actions: {
         login({ commit }, userInfo) {
-            let username = userInfo.username
-            let password = userInfo.password
-            let remember = userInfo.remember
             return new Promise((resolve, reject) => {
-                login(username, password, remember).then((res) => {
-                    setToken(res.data.data)
+                login(userInfo).then((res) => {
+                    setToken(res.data.data, userInfo.remember)
                     commit(types.SET_USER_STATE, 'token', res.data.data)
                     resolve(res)
                 }).catch((error) => {
