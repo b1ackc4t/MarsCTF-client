@@ -28,7 +28,7 @@
                     <el-form-item label="题目附件">
                         <el-upload class="upload-demo" drag :action="inject('server') + '/api/admin/uploadCTFFile'"
                             :with-credentials="true" :limit="1" :on-remove="removeFileSubmit" :on-success="uploadFile"
-                            :on-preview="previewFile">
+                            :on-preview="previewFile" :headers="headers">
                             <el-icon class="el-icon--upload">
                                 <upload-filled />
                             </el-icon>
@@ -130,6 +130,7 @@
     import {getChaTagAndTypeForAdmin} from "@/api/chaTag";
     import {getAllType} from "@/api/chaType";
     import {inject} from 'vue'
+    import { getToken } from '../../../utils/auth';
 
     export default {
         name: "AddChallengeView",
@@ -221,7 +222,10 @@
                     ],
                 },
                 tagOptions: [],
-                loading: false
+                loading: false,
+                headers: {
+                    Authorization: 'Bearer ' + getToken()
+                }
             }
         },
         methods: {
